@@ -59,8 +59,4 @@ public class CarsController {
         return this.carService.getAllSorted(direction);
     }
     
-    @PostMapping("/rent")
-    public Result rent(@RequestParam int carId){
-        return this.carService.rent(carId);
-    }
 }

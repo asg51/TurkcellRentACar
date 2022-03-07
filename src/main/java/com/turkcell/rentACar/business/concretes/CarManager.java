@@ -110,15 +110,4 @@ public class CarManager implements CarService {
 		return new SuccessDataResult<List<CarListDto>>(response,"Cars Listed succesfully");
 	}
 	
-
-
-	@Override
-	public Result rent(int carId) {
-	var result=	this.carMaintenanceService.getByCar_CarIdAndReturnDate(carId,null);
-		
-		if(result.getData()==null) {
-			return new SuccessResult("rented");
-		}
-		return new ErrorResult("in car maintenance");
-	}
 }

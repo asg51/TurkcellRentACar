@@ -1,16 +1,19 @@
 package com.turkcell.rentACar.business.concretes;
 
 import com.turkcell.rentACar.business.abstracts.CarMaintenanceService;
+import com.turkcell.rentACar.business.abstracts.CarRentalService;
 import com.turkcell.rentACar.business.dtos.CarMaintenanceListDto;
 import com.turkcell.rentACar.business.requests.creates.CreateCarMaintenanceRequest;
 import com.turkcell.rentACar.business.requests.deletes.DeleteCarMaintenanceRequest;
 import com.turkcell.rentACar.business.requests.updates.UpdateCarMaintenanceRequest;
+import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACar.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACar.core.utilities.results.*;
 import com.turkcell.rentACar.dataAccess.abstracts.CarDao;
 import com.turkcell.rentACar.dataAccess.abstracts.CarMaintenanceDao;
 import com.turkcell.rentACar.entities.concretes.CarMaintenance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,11 +25,14 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 
     private ModelMapperService modelMapperService;
     private CarMaintenanceDao carMaintenanceDao;
+    private CarRentalService carRentalService;
 
     @Autowired
-    public CarMaintenanceManager(ModelMapperService modelMapperService, CarDao carDao, CarMaintenanceDao carMaintenanceDao) {
+    @Lazy
+    public CarMaintenanceManager(ModelMapperService modelMapperService, CarDao carDao, CarMaintenanceDao carMaintenanceDao,CarRentalService carRentalService) {
         this.modelMapperService = modelMapperService;
         this.carMaintenanceDao = carMaintenanceDao;
+        this.carRentalService=carRentalService;
     }
 
     @Override
@@ -39,8 +45,10 @@ public class CarMaintenanceManager implements CarMaintenanceService {
     }
 
     @Override
-    public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) {
-        CarMaintenance carMaintenance =this.modelMapperService.forRequest().map(createCarMaintenanceRequest,CarMaintenance.class);
+    public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+        maintenance(createCarMaintenanceRequest.getCarId());
+    	
+    	CarMaintenance carMaintenance =this.modelMapperService.forRequest().map(createCarMaintenanceRequest,CarMaintenance.class);
         carMaintenance.setMaintenanceId(0);
         this.carMaintenanceDao.save(carMaintenance);
         return new SuccessResult("Car Maintenance Added Successfully");
@@ -72,5 +80,14 @@ public class CarMaintenanceManager implements CarMaintenanceService {
 	@Override
 	public DataResult<CarMaintenance> getByCar_CarIdAndReturnDate(int carId,Date returnDate) {
 		return new SuccessDataResult<CarMaintenance>(this.carMaintenanceDao.getByCar_CarIdAndReturnDate(carId,returnDate));
+	}
+	
+	private Result maintenance(int carId) throws BusinessException {
+	var result=	this.carRentalService.getByCar_CarIdAndReturnDate(carId,null);
+		
+		if(result.getData()==null) {
+			return new SuccessResult("car available");
+		}
+		throw new BusinessException("car not available");
 	}
 }
