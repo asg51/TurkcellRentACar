@@ -23,35 +23,49 @@ import com.turkcell.rentACar.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/carRental")
-public class CarRentalController {
+public class CarRentalController 
+{
 	private CarRentalService carRentalService;
 
-	public CarRentalController(CarRentalService carRentalService) {
+	public CarRentalController(CarRentalService carRentalService) 
+	{
 		this.carRentalService = carRentalService;
 	}
 
 	@GetMapping("/getAll")
-	DataResult<List<CarRentalDto>> getAll() {
+	DataResult<List<CarRentalDto>> getAll() 
+	{
 		return carRentalService.getAll();
 	}
 
 	@PostMapping("/add")
-	Result add(@RequestBody CreateCarRentalRequest createCarRentalRequest)  throws BusinessException{
+	Result add(@RequestBody CreateCarRentalRequest createCarRentalRequest)  throws BusinessException
+	{
 		return carRentalService.add(createCarRentalRequest);
 	}
 
 	@PutMapping("/update")
-	Result update(@RequestBody UpdateCarRentalRequest updateCarRentalRequest) {
+	Result update(@RequestBody UpdateCarRentalRequest updateCarRentalRequest) throws BusinessException
+	{
 		return carRentalService.update(updateCarRentalRequest);
 	}
 
 	@DeleteMapping("/delete")
-	Result delete(@RequestBody DeleteCarRentalRequest deleteCarRentalRequest) {
+	Result delete(@RequestBody DeleteCarRentalRequest deleteCarRentalRequest) throws BusinessException
+	{
 		return carRentalService.delete(deleteCarRentalRequest);
 	}
 
 	@GetMapping("/getByCarId")
-	DataResult<List<CarRentalListDto>> getByCarId(@RequestParam int id) {
+	DataResult<List<CarRentalListDto>> getByCarId(@RequestParam int id) throws BusinessException 
+	{
 		return carRentalService.getByCarId(id);
 	}
+
+	@PostMapping("/calculatePrice")
+	DataResult<Double> calculatePrice(@RequestBody CreateCarRentalRequest createCarRentalRequest) throws BusinessException
+	{
+		return carRentalService.calculatePrice(createCarRentalRequest);
+	}
+
 }
