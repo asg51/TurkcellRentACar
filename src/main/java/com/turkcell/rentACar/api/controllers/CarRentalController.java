@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkcell.rentACar.business.abstracts.CarRentalService;
 import com.turkcell.rentACar.business.dtos.CarRentalDto;
 import com.turkcell.rentACar.business.dtos.CarRentalListDto;
-import com.turkcell.rentACar.business.requests.creates.CreateCarRentalRequest;
-import com.turkcell.rentACar.business.requests.deletes.DeleteCarRentalRequest;
-import com.turkcell.rentACar.business.requests.updates.UpdateCarRentalRequest;
+import com.turkcell.rentACar.business.requests.creates.CreateCarRentalForCorporateCustomerRequest;
+import com.turkcell.rentACar.business.requests.creates.CreateCarRentalForIndividualCustomerRequest;
+import com.turkcell.rentACar.business.requests.deletes.DeleteCarRentalForCorporateCustomerRequest;
+import com.turkcell.rentACar.business.requests.deletes.DeleteCarRentalForIndividualCustomerRequest;
+import com.turkcell.rentACar.business.requests.updates.UpdateCarRentalForCorporateCustomerRequest;
+import com.turkcell.rentACar.business.requests.updates.UpdateCarRentalForIndividualCustomerRequest;
 import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACar.core.utilities.results.DataResult;
 import com.turkcell.rentACar.core.utilities.results.Result;
@@ -38,22 +41,40 @@ public class CarRentalController
 		return carRentalService.getAll();
 	}
 
-	@PostMapping("/add")
-	Result add(@RequestBody CreateCarRentalRequest createCarRentalRequest)  throws BusinessException
+	@PostMapping("/rentForIndividualCustomer")
+	Result add(@RequestBody CreateCarRentalForIndividualCustomerRequest carRentalForIndividualCustomerRequest)  throws BusinessException
 	{
-		return carRentalService.add(createCarRentalRequest);
+		return carRentalService.rentForIndividualCustomer(carRentalForIndividualCustomerRequest);
 	}
 
-	@PutMapping("/update")
-	Result update(@RequestBody UpdateCarRentalRequest updateCarRentalRequest) throws BusinessException
+	@PostMapping("/rentForCorporateCustomer")
+	Result add(@RequestBody CreateCarRentalForCorporateCustomerRequest createCarRentalForCorporateCustomerRequest)  throws BusinessException
 	{
-		return carRentalService.update(updateCarRentalRequest);
+		return carRentalService.rentForCorporateCustomer(createCarRentalForCorporateCustomerRequest);
 	}
 
-	@DeleteMapping("/delete")
-	Result delete(@RequestBody DeleteCarRentalRequest deleteCarRentalRequest) throws BusinessException
+	@PutMapping("/updateForIndividualCustomer")
+	Result update(@RequestBody UpdateCarRentalForIndividualCustomerRequest updateCarRentalForIndividualCustomerRequest) throws BusinessException
 	{
-		return carRentalService.delete(deleteCarRentalRequest);
+		return carRentalService.updateForIndividualCustomer(updateCarRentalForIndividualCustomerRequest);
+	}
+
+	@PutMapping("/updateForCorporateCustomer")
+	Result update(@RequestBody UpdateCarRentalForCorporateCustomerRequest updateCarRentalForCorporateCustomerRequest) throws BusinessException
+	{
+		return carRentalService.updateForCorporateCustomer(updateCarRentalForCorporateCustomerRequest);
+	}
+
+	@DeleteMapping("/deleteForCorporateCustomer")
+	Result delete(@RequestBody DeleteCarRentalForCorporateCustomerRequest deleteCarRentalForCorporateCustomerRequest) throws BusinessException
+	{
+		return carRentalService.deleteForCorporateCustomer(deleteCarRentalForCorporateCustomerRequest);
+	}
+
+	@DeleteMapping("/deleteIndividualCustomer")
+	Result delete(@RequestBody DeleteCarRentalForIndividualCustomerRequest deleteCarRentalForIndividualCustomerRequest) throws BusinessException
+	{
+		return carRentalService.deleteForIndividualCustomer(deleteCarRentalForIndividualCustomerRequest);
 	}
 
 	@GetMapping("/getByCarId")
@@ -61,11 +82,4 @@ public class CarRentalController
 	{
 		return carRentalService.getByCarId(id);
 	}
-
-	@PostMapping("/calculatePrice")
-	DataResult<Double> calculatePrice(@RequestBody CreateCarRentalRequest createCarRentalRequest) throws BusinessException
-	{
-		return carRentalService.calculatePrice(createCarRentalRequest);
-	}
-
 }

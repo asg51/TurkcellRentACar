@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BrandManager implements BrandService {
-
+public class BrandManager implements BrandService 
+{
 	private BrandDao brandDao;
 	private ModelMapperService modelMapperService;
 

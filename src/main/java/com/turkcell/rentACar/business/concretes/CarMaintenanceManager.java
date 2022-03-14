@@ -118,7 +118,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 
 	private void checkIfItIsMaintainableByRented(int carId, LocalDate localDate) throws BusinessException 
 	{
-		this.carRentalService.IsAVehicleAvailableOnTheSpecifiedDate(carId, localDate);
+		this.carRentalService.IsACarAvailableOnTheSpecifiedDate(carId, localDate);
 	}
 
 	private void checkIfItIsMaintainableByMaintenance(int carId) throws BusinessException 

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderedAdditionalServiceDao extends JpaRepository<OrderedAdditionalService,Integer> 
 {
-	
+	void deleteAllByCarRental_CarRentalId(int carRentalId);
 }
