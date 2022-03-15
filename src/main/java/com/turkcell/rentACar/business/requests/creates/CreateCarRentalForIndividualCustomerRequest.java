@@ -18,10 +18,6 @@ public class CreateCarRentalForIndividualCustomerRequest
 {
     @NotNull
     @Positive
-    private int carRentalId;
-
-    @NotNull
-    @Positive
     private int carId;
     
     @Positive
@@ -37,9 +33,9 @@ public class CreateCarRentalForIndividualCustomerRequest
     
     @NotNull
     @NotBlank
-    private String startCity;
+    private int startCityId;
     
     @NotNull
     @NotBlank
-    private String endCity;
+    private int endCityId;
 }

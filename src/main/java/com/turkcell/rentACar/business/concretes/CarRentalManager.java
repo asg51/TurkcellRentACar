@@ -26,6 +26,7 @@ import com.turkcell.rentACar.business.requests.deletes.DeleteCarRentalForCorpora
 import com.turkcell.rentACar.business.requests.deletes.DeleteCarRentalForIndividualCustomerRequest;
 import com.turkcell.rentACar.business.requests.updates.UpdateCarRentalForCorporateCustomerRequest;
 import com.turkcell.rentACar.business.requests.updates.UpdateCarRentalForIndividualCustomerRequest;
+import com.turkcell.rentACar.business.requests.updates.UpdateInvoiceRequest;
 import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACar.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentACar.core.utilities.results.DataResult;
@@ -65,12 +66,15 @@ public class CarRentalManager implements CarRentalService {
 	}
 
 	@Override
-	public DataResult<List<CarRentalDto>> getAll() {
+	public DataResult<List<CarRentalListDto>> getAll() 
+	{
 		List<CarRental> result = this.carRentalDao.findAll();
-		List<CarRentalDto> response = result.stream()
-				.map(carRental -> this.modelMapperService.forDto().map(carRental, CarRentalDto.class))
+
+		List<CarRentalListDto> response = result.stream()
+				.map(carRental -> this.modelMapperService.forDto().map(carRental, CarRentalListDto.class))
 				.collect(Collectors.toList());
-		return new SuccessDataResult<List<CarRentalDto>>(response, "Car Rental Listed Successfully");
+				
+		return new SuccessDataResult<List<CarRentalListDto>>(response, "Car Rental Listed Successfully");
 	}
 
 	@Override
@@ -126,8 +130,20 @@ public class CarRentalManager implements CarRentalService {
 		checkIfCarRentalExistsById(updateCarRentalForCorporateCustomerRequest.getCarRentalId());
 		checkIfItCanBeRented(updateCarRentalForCorporateCustomerRequest.getStartDate(), updateCarRentalForCorporateCustomerRequest.getReturnDate(), updateCarRentalForCorporateCustomerRequest.getCarId(),updateCarRentalForCorporateCustomerRequest.getCarRentalId());
 
+		this.orderedAdditionalServiceService.deleteAllByCarRentelId(updateCarRentalForCorporateCustomerRequest.getCarRentalId());
+		insertAddtionalServices(updateCarRentalForCorporateCustomerRequest.getAdditionalServiceIds(),updateCarRentalForCorporateCustomerRequest.getCarRentalId());
+
+		CreateCarRentalForIndividualCustomerRequest createCarRentalForIndividualCustomerRequest = this.modelMapperService.forRequest().map(updateCarRentalForCorporateCustomerRequest, CreateCarRentalForIndividualCustomerRequest.class);
+		
+		var price = calculatePriceForIndividaulCustomer(createCarRentalForIndividualCustomerRequest).getData();
+		
 		CarRental carRental = this.modelMapperService.forRequest().map(updateCarRentalForCorporateCustomerRequest, CarRental.class);
+		carRental.setPrice(price);
+		carRental.setRentedDays(findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
+
 		this.carRentalDao.save(carRental);
+
+		updateInvoice(updateCarRentalForCorporateCustomerRequest.getCorporateCustomerId(), price, carRental);
 		
 		return new SuccessResult("Car Rental Updated Successfully");
 	}
@@ -142,16 +158,17 @@ public class CarRentalManager implements CarRentalService {
 		this.orderedAdditionalServiceService.deleteAllByCarRentelId(updateCarRentalForIndividualCustomerRequest.getCarRentalId());
 		insertAddtionalServices(updateCarRentalForIndividualCustomerRequest.getAdditionalServiceIds(),updateCarRentalForIndividualCustomerRequest.getCarRentalId());
 
-//////////////////// maplenecek
+		CreateCarRentalForIndividualCustomerRequest createCarRentalForIndividualCustomerRequest = this.modelMapperService.forRequest().map(updateCarRentalForIndividualCustomerRequest, CreateCarRentalForIndividualCustomerRequest.class);
 		
-		var price = calculatePriceForCorporateCustomer(updateCarRentalForIndividualCustomerRequest).getData();
-
-		this.invoiceService.update(updateInvoiceRequest)
-
+		var price = calculatePriceForIndividaulCustomer(createCarRentalForIndividualCustomerRequest).getData();
+		
 		CarRental carRental = this.modelMapperService.forRequest().map(updateCarRentalForIndividualCustomerRequest, CarRental.class);
+		carRental.setPrice(price);
+		carRental.setRentedDays(findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
+
 		this.carRentalDao.save(carRental);
 
-
+		updateInvoice(updateCarRentalForIndividualCustomerRequest.getIndividualCustomerId(), price, carRental);
 
 		return new SuccessResult("Car Rental Updated Successfully");
 	}
@@ -161,8 +178,8 @@ public class CarRentalManager implements CarRentalService {
 	{
 		checkIfCarRentalExistsById(deleteCarRentalForIndividualCustomerRequest.getCarRentalId());
 		
-		CarRental carRental = this.modelMapperService.forRequest().map(deleteCarRentalForIndividualCustomerRequest, CarRental.class);
-		this.carRentalDao.deleteById(carRental.getCarRentalId());
+		//CarRental carRental = this.modelMapperService.forRequest().map(deleteCarRentalForIndividualCustomerRequest, CarRental.class);
+		this.carRentalDao.deleteById(deleteCarRentalForIndividualCustomerRequest.getCarRentalId());
 		
 		return new SuccessResult("Car Rental Deleted Successfully");
 	}
@@ -211,8 +228,8 @@ public class CarRentalManager implements CarRentalService {
 	{
 		var result = calculatePrice(createCarRentalForCorporateCustomerRequest.getCarId(), createCarRentalForCorporateCustomerRequest.getStartDate(), createCarRentalForCorporateCustomerRequest.getReturnDate(),
 		createCarRentalForCorporateCustomerRequest.getAdditionalServiceIds(),
-		createCarRentalForCorporateCustomerRequest.getStartCity(),
-		createCarRentalForCorporateCustomerRequest.getEndCity());
+		createCarRentalForCorporateCustomerRequest.getStartCityId(),
+		createCarRentalForCorporateCustomerRequest.getEndCityId());
 
 		return new SuccessDataResult<Double>(result);
 	}
@@ -222,8 +239,8 @@ public class CarRentalManager implements CarRentalService {
 	{
 		var result = calculatePrice(createCarRentalForIndividualCustomerRequest.getCarId(), createCarRentalForIndividualCustomerRequest.getStartDate(), createCarRentalForIndividualCustomerRequest.getReturnDate(),
 		createCarRentalForIndividualCustomerRequest.getAdditionalServiceIds(),
-		createCarRentalForIndividualCustomerRequest.getStartCity(),
-		createCarRentalForIndividualCustomerRequest.getEndCity());
+		createCarRentalForIndividualCustomerRequest.getStartCityId(),
+		createCarRentalForIndividualCustomerRequest.getEndCityId());
 
 		return new SuccessDataResult<Double>(result);
 	}
@@ -237,13 +254,13 @@ public class CarRentalManager implements CarRentalService {
 		return new SuccessDataResult<CarRentalDto>(carRentalDto,"Car Rental Getted Succesfully");
 	}
 
-	private double calculatePrice(int carId, LocalDate startDate, LocalDate returnDate, List<Integer> additionalServiceIds, String startCity, String endCity) throws BusinessException{
+	private double calculatePrice(int carId, LocalDate startDate, LocalDate returnDate, List<Integer> additionalServiceIds, int startCityId, int endCityId) throws BusinessException{
 		
 		CarListDto car = this.carService.getById(carId).getData();
 
 		long days = findTheNumberOfDaysToRent(startDate, returnDate);
 
-		double price = days * car.getCarDailyPrice() + calculateExtraPriceByCityDistance(startCity, endCity);
+		double price = days * car.getCarDailyPrice() + calculateExtraPriceByCityDistance(startCityId, endCityId);
 
 		price += additionalServiceService.calculateAdditionalServicePrice(days, additionalServiceIds).getData();
 		return price;
@@ -274,7 +291,7 @@ public class CarRentalManager implements CarRentalService {
 	private boolean checkIfItCanBeRented(LocalDate startDate, LocalDate returnDate, int carId,int carRentalId) throws BusinessException 
 	{
 		var result = this.carRentalDao.getRentalInformationOfTheCarOnTheSpecifiedDate(
-			startDate, returnDate, carId,carRentalId);
+			startDate, returnDate, carId, carRentalId);
 		if (result.size() > 0) 
 		{
 			throw new BusinessException("Rented between the dates specified in the vehicle");
@@ -301,9 +318,9 @@ public class CarRentalManager implements CarRentalService {
 		throw new BusinessException("in car maintenance");
 	}
 
-	private double calculateExtraPriceByCityDistance(String startCity, String endCity) 
+	private double calculateExtraPriceByCityDistance(int startCityId, int endCityId) 
 	{
-		if (startCity.equals(endCity)) 
+		if (startCityId==endCityId) 
 		{
 			return 0;
 		}
@@ -317,7 +334,11 @@ public class CarRentalManager implements CarRentalService {
 	
 	private void checkIfCarRentalExistsById(int carRentalId) throws BusinessException 
 	{
-		this.carRentalDao.getById(carRentalId);
+		var result=	this.carRentalDao.existsByCarRentalId(carRentalId);
+		if(result == false)
+		{
+			throw new BusinessException("Rental information not found");
+		}
 	}
 
 	private void insertInvoice(int customerId, Double price, CarRental carRental) throws BusinessException 
@@ -328,5 +349,15 @@ public class CarRentalManager implements CarRentalService {
 		createInvoiceRequest.setTotalPrice(price);
 		createInvoiceRequest.setCustomerId(customerId);
 		this.invoiceService.add(createInvoiceRequest);
+	}
+
+	private void updateInvoice(int customerId, Double price, CarRental carRental) throws BusinessException 
+	{
+		UpdateInvoiceRequest updateInvoiceRequest = new UpdateInvoiceRequest();
+		updateInvoiceRequest.setCarRentalId(carRental.getCarRentalId());
+		updateInvoiceRequest.setCreationDate(LocalDate.now());
+		updateInvoiceRequest.setTotalPrice(price);
+		updateInvoiceRequest.setCustomerId(customerId);
+		this.invoiceService.update(updateInvoiceRequest);
 	}
 }

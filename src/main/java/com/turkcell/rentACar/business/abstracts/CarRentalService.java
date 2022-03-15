@@ -17,7 +17,7 @@ import com.turkcell.rentACar.core.utilities.results.Result;
 
 public interface CarRentalService 
 {
-    DataResult<List<CarRentalDto>> getAll();
+    DataResult<List<CarRentalListDto>> getAll();
     DataResult<List<CarRentalListDto>> getByCarId(int id) throws BusinessException;
     DataResult<CarRentalDto> getById(int id);
 

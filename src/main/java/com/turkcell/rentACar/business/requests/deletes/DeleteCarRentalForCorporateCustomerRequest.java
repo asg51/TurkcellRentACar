@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeleteCarRentalForCorporateCustomerRequest {
-
+public class DeleteCarRentalForCorporateCustomerRequest 
+{
     @NotNull
     @NotBlank
     @Positive

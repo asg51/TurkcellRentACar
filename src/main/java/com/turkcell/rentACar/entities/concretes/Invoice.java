@@ -36,8 +36,8 @@ public class Invoice
     @Column(name = "total_price")
     private double totalPrice;
     
-    @OneToOne
-    @JoinColumn(name = "car_rental_id")
+    @OneToOne(orphanRemoval=true, cascade=CascadeType.REMOVE)
+    @JoinColumn(name = "car_rental_id" )
     private CarRental carRental;
 
     @ManyToOne(cascade = {CascadeType.ALL})

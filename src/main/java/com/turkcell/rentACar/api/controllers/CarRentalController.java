@@ -2,6 +2,7 @@ package com.turkcell.rentACar.api.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +31,14 @@ public class CarRentalController
 {
 	private CarRentalService carRentalService;
 
+	@Autowired
 	public CarRentalController(CarRentalService carRentalService) 
 	{
 		this.carRentalService = carRentalService;
 	}
 
 	@GetMapping("/getAll")
-	DataResult<List<CarRentalDto>> getAll() 
+	DataResult<List<CarRentalListDto>> getAll() 
 	{
 		return carRentalService.getAll();
 	}

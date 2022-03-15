@@ -65,11 +65,14 @@ public class InvoiceManager implements InvoiceService
 	@Override
 	public Result update(UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException 
     {
-		checkIfExistByInvoiceId(updateInvoiceRequest.getInvoiceId());
+		Invoice invoice= this.invoiceDao.getByCarRental_CarRentalId(updateInvoiceRequest.getCarRentalId());
+
+		checkIfExistByInvoiceId(invoice.getInvoiceId());
 		
-		Invoice invoice = invoiceDao.getById(updateInvoiceRequest.getInvoiceId());
-		invoice = this.modelMapperService.forRequest().map(updateInvoiceRequest, Invoice.class);
-		this.invoiceDao.save(invoice);
+		Invoice invoiceUpdate = this.modelMapperService.forRequest().map(updateInvoiceRequest, Invoice.class);
+		invoiceUpdate.setInvoiceId(invoice.getInvoiceId());
+
+		this.invoiceDao.save(invoiceUpdate);
 
 		return new SuccessResult("Invoice Updated Succesfully");
 	}

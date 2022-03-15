@@ -36,11 +36,11 @@ public class UpdateCarRentalForCorporateCustomerRequest
 
     @NotNull
     @NotBlank
-    private String startCity;
+    private int startCityId;
 
     @NotNull
     @NotBlank
-    private String endCity;
+    private int endCityId;
 
     private List<Integer> additionalServiceIds;
 }

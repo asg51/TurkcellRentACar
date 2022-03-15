@@ -3,6 +3,7 @@ package com.turkcell.rentACar.entities.concretes;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.context.annotation.Lazy;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,12 +41,14 @@ public class CarRental
 	@Column(name = "return_date")
 	private LocalDate returnDate;
 
-	@Column(name = "start_city")
-	private String startCityName;
+	@ManyToOne
+	@JoinColumn(name = "start_city_id")
+	private City startCity;
 
-	@Column(name = "end_city")
-	private String endCityName;
-	
+	@ManyToOne
+	@JoinColumn(name = "end_city_id")
+	private City endCity;
+
 	@Column(name = "price")
 	private double price;
 
@@ -52,9 +59,9 @@ public class CarRental
 	@JoinColumn(name = "car_id")
 	private Car car;
 
-	@OneToMany(mappedBy ="carRental" )
+	@OneToMany(mappedBy ="carRental" ,orphanRemoval=true, cascade=CascadeType.REMOVE)
 	private List<OrderedAdditionalService> orderedAdditionalService;
 
-	@OneToOne(mappedBy = "carRental")
+	@OneToOne(mappedBy = "carRental", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private Invoice invoice;
 }

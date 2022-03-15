@@ -38,9 +38,9 @@ public class UpdateCarRentalForIndividualCustomerRequest
     
     @NotNull
     @NotBlank
-    private String startCity;
+    private int startCityId;
     
     @NotNull
     @NotBlank
-    private String endCity;
+    private int endCityId;
 }
