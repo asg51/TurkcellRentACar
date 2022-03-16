@@ -58,7 +58,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException 
 	{
 		checkIfCarExistsById(createCarMaintenanceRequest.getCarId());
-		checkIfItIsMaintainableByRented(createCarMaintenanceRequest.getCarId(), createCarMaintenanceRequest.getMaintenanceDate());
+		checkIfItIsMaintainableByRented(createCarMaintenanceRequest.getCarId(), createCarMaintenanceRequest.getReturnDate());
 		checkIfItIsMaintainableByMaintenance(createCarMaintenanceRequest.getCarId());
 
 		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest,

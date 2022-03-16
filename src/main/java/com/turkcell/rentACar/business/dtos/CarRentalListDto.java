@@ -17,5 +17,7 @@ public class CarRentalListDto {
     private LocalDate returnDate;
     private String startCityName;
     private String endCityName;
-    private int carId;
+    
+    @JsonProperty("carId")
+    private int car_CarId;
 }
