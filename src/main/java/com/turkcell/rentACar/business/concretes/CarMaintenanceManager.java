@@ -99,7 +99,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	@Override
 	public DataResult<List<CarMaintenanceListDto>> getByCarId(int id) throws BusinessException 
 	{
-		checkIfExistByMaintenanceId(id);
+		checkIfCarExistsById(id);
 		
 		List<CarMaintenance> carMaintenanceList = carMaintenanceDao.getAllByCar_CarId(id);
 		List<CarMaintenanceListDto> response = carMaintenanceList.stream().map(
@@ -110,7 +110,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	}
 
 	@Override
-	public DataResult<CarMaintenance> getByCar_CarIdAndReturnDate(int carId, Date returnDate) 
+	public DataResult<CarMaintenance> getByCarIdAndReturnDate(int carId, Date returnDate) 
 	{
 		return new SuccessDataResult<CarMaintenance>(
 				this.carMaintenanceDao.getByCar_CarIdAndReturnDate(carId, returnDate));
@@ -142,6 +142,6 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	
 	private void checkIfCarExistsById(int carId) throws BusinessException 
 	{
-		this.carService.getById(carId);
+		carService.checkIfExistByCarId(carId);
 	}
 }

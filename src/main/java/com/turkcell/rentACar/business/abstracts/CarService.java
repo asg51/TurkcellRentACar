@@ -11,7 +11,8 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-public interface CarService {
+public interface CarService 
+{
     DataResult<List<CarListDto>> getAll();
     Result add(CreateCarRequest createCarRequest) throws BusinessException;
     Result update(UpdateCarRequest updateCarRequest) throws BusinessException;
@@ -20,4 +21,5 @@ public interface CarService {
     DataResult<List<CarListDto>> getByCarDailyPriceLessThanOrEqual(Double carDailyPrice);
     DataResult<List<CarListDto>> getAllPaged(int pageNo,int pageSize);
     DataResult<List<CarListDto>> getAllSorted(Sort.Direction direction);
-    }
+    Result checkIfExistByCarId(int carId) throws BusinessException;
+}

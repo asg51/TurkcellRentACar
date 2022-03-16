@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.turkcell.rentACar.business.abstracts.CorporateCustomerService;
+import com.turkcell.rentACar.business.abstracts.UserService;
 import com.turkcell.rentACar.business.dtos.CorporateCustomerDto;
 import com.turkcell.rentACar.business.dtos.CorporateCustomerListDto;
 import com.turkcell.rentACar.business.requests.creates.CreateCorporateCustomerRequest;
 import com.turkcell.rentACar.business.requests.deletes.DeleteCorporateCustomerRequest;
+import com.turkcell.rentACar.business.requests.deletes.DeleteUserRequest;
 import com.turkcell.rentACar.business.requests.updates.UpdateCorporateCustomerRequest;
 import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACar.core.utilities.mapping.ModelMapperService;
@@ -21,15 +23,17 @@ import com.turkcell.rentACar.entities.concretes.CorporateCustomer;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CorporateCustomerManager implements CorporateCustomerService{
-
+public class CorporateCustomerManager implements CorporateCustomerService
+{
     private CorporateCustomerDao corporateCustomerDao;
     private ModelMapperService modelMapperService;
+    private UserService userService;
 
-    public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService) 
+    public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService, UserService userService) 
     {
         this.corporateCustomerDao = corporateCustomerDao;
         this.modelMapperService = modelMapperService;
+        this.userService = userService;
     }
 
     @Override
@@ -67,11 +71,11 @@ public class CorporateCustomerManager implements CorporateCustomerService{
     public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException 
     {
         checkIfExistByCorporateCustomerId(updateCorporateCustomerRequest.getCorporateCustomerId());
-        //checkIfTaxNumberIsDuplicated
+        checkIfTaxNumberIsDuplicated(updateCorporateCustomerRequest.getCorporateCustomerId(), updateCorporateCustomerRequest.getTaxNumber());
 
         CorporateCustomer corporateCustomer = corporateCustomerDao.getById(updateCorporateCustomerRequest.getCorporateCustomerId());
 		corporateCustomer = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest,CorporateCustomer.class);
-		
+		corporateCustomer.setUserId(corporateCustomer.getCorporateCustomerId());
         this.corporateCustomerDao.save(corporateCustomer);
 		
 		return new SuccessResult("CorporateCustomer Updated Succesfully");
@@ -82,25 +86,34 @@ public class CorporateCustomerManager implements CorporateCustomerService{
     {
         checkIfExistByCorporateCustomerId(deleteCorporateCustomerRequest.getCorporateCustomerId());
 
-        CorporateCustomer corporateCustomer = this.modelMapperService.forRequest().map(deleteCorporateCustomerRequest,CorporateCustomer.class);
+        DeleteUserRequest deleteUserRequest = new DeleteUserRequest(deleteCorporateCustomerRequest.getCorporateCustomerId());
 
-		this.corporateCustomerDao.delete(corporateCustomer);
+		
+        this.userService.delete(deleteUserRequest);
 		
 		return new SuccessResult("CorporateCustomer Deleted Succesfully");
     }
 
-
-    private void checkIfExistByCorporateCustomerId(int corporateCustomerId) throws BusinessException 
+    @Override
+    public Result checkIfExistByCorporateCustomerId(int corporateCustomerId) throws BusinessException 
     {
 		if (!this.corporateCustomerDao.existsById(corporateCustomerId)) {
 			throw new BusinessException("CorporateCustomer not found");
 		}
+        return new SuccessResult();
 	}
 
     private void checkIfTaxNumberIsDuplicated(String taxNumber) throws BusinessException
     {
         if(this.corporateCustomerDao.existsByTaxNumber(taxNumber)){
-            throw new BusinessException("National Identity already exists");
+            throw new BusinessException("Tax Number already exists");
+        }
+    }
+
+    private void checkIfTaxNumberIsDuplicated(int id, String taxNumber) throws BusinessException
+    {
+        if(this.corporateCustomerDao.getCorporateCustomerByTaxNumberAndNotEqualToId(id, taxNumber).size()>0){
+            throw new BusinessException("Tax Number already exists");
         }
     }
 }

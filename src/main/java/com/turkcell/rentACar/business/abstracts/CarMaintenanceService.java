@@ -14,11 +14,12 @@ import com.turkcell.rentACar.entities.concretes.CarMaintenance;
 import java.util.Date;
 import java.util.List;
 
-public interface CarMaintenanceService {
+public interface CarMaintenanceService 
+{
     DataResult<List<CarMaintenanceListDto>> getAll();
     Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest)  throws BusinessException;
     Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException;
     Result delete(DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) throws BusinessException;
     DataResult<List<CarMaintenanceListDto>> getByCarId(int id) throws BusinessException;
-    DataResult<CarMaintenance> getByCar_CarIdAndReturnDate(int carId,Date returnDate);
+    DataResult<CarMaintenance> getByCarIdAndReturnDate(int carId,Date returnDate);
 }

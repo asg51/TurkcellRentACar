@@ -18,4 +18,5 @@ public interface CorporateCustomerService
     DataResult<CorporateCustomerDto> getById(int id) throws BusinessException;
 	Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException;
 	Result delete(DeleteCorporateCustomerRequest DeleteCorporateCustomerRequest) throws BusinessException;
+    Result checkIfExistByCorporateCustomerId(int corporateCustomerId) throws BusinessException;
 }

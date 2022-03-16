@@ -18,4 +18,5 @@ public interface IndividualCustomerService
     DataResult<IndividualCustomerDto> getById(int id) throws BusinessException;
 	Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException;
 	Result delete(DeleteIndividualCustomerRequest DeleteIndividualCustomerRequest) throws BusinessException;
+    Result checkIfExistByIndividualCustomerId(int individualCustomerId) throws BusinessException;
 }

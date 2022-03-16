@@ -13,6 +13,8 @@ import com.turkcell.rentACar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentACar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentACar.business.abstracts.CarRentalService;
 import com.turkcell.rentACar.business.abstracts.CarService;
+import com.turkcell.rentACar.business.abstracts.CorporateCustomerService;
+import com.turkcell.rentACar.business.abstracts.IndividualCustomerService;
 import com.turkcell.rentACar.business.abstracts.InvoiceService;
 import com.turkcell.rentACar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentACar.business.dtos.CarListDto;
@@ -46,6 +48,8 @@ public class CarRentalManager implements CarRentalService {
 	private AdditionalServiceService additionalServiceService;
 	private OrderedAdditionalServiceService orderedAdditionalServiceService;
 	private InvoiceService invoiceService;
+	private IndividualCustomerService individualCustomerService;
+	private CorporateCustomerService corporateCustomerService;
 
 	@Autowired
 	public CarRentalManager(ModelMapperService modelMapperService, 
@@ -54,7 +58,9 @@ public class CarRentalManager implements CarRentalService {
 			CarService carService,
 			AdditionalServiceService additionalServiceService,
 			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService,
-			InvoiceService invoiceService) 
+			InvoiceService invoiceService,
+			IndividualCustomerService individualCustomerService, 
+			CorporateCustomerService corporateCustomerService) 
 	{
 		this.modelMapperService = modelMapperService;
 		this.carRentalDao = carRentalDao;
@@ -63,6 +69,8 @@ public class CarRentalManager implements CarRentalService {
 		this.additionalServiceService = additionalServiceService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 		this.invoiceService= invoiceService;
+		this.individualCustomerService = individualCustomerService;
+		this.corporateCustomerService = corporateCustomerService;
 	}
 
 	@Override
@@ -84,6 +92,9 @@ public class CarRentalManager implements CarRentalService {
 		checkIfCarExistsById(createCarRentalForIndividualCustomerRequest.getCarId());
 		checkIfCarMaintenance(createCarRentalForIndividualCustomerRequest.getCarId());
 		checkIfItCanBeRented(createCarRentalForIndividualCustomerRequest.getStartDate(), createCarRentalForIndividualCustomerRequest.getReturnDate(), createCarRentalForIndividualCustomerRequest.getCarId());
+		checkIfReturnDateAfterStartDate(createCarRentalForIndividualCustomerRequest.getStartDate(), createCarRentalForIndividualCustomerRequest.getReturnDate());
+		checkIfStartDateBeforeToday(createCarRentalForIndividualCustomerRequest.getStartDate());
+		checkIfIndividualCustomerExists(createCarRentalForIndividualCustomerRequest.getIndividualCustomerId());
 
 		var price =  calculatePriceForIndividaulCustomer(createCarRentalForIndividualCustomerRequest).getData();
 
@@ -107,6 +118,9 @@ public class CarRentalManager implements CarRentalService {
 		checkIfCarExistsById(createCarRentalForCorporateCustomerRequest.getCarId());
 		checkIfCarMaintenance(createCarRentalForCorporateCustomerRequest.getCarId());
 		checkIfItCanBeRented(createCarRentalForCorporateCustomerRequest.getStartDate(), createCarRentalForCorporateCustomerRequest.getReturnDate(), createCarRentalForCorporateCustomerRequest.getCarId());
+		checkIfReturnDateAfterStartDate(createCarRentalForCorporateCustomerRequest.getStartDate(), createCarRentalForCorporateCustomerRequest.getReturnDate());
+		checkIfStartDateBeforeToday(createCarRentalForCorporateCustomerRequest.getStartDate());
+		checkIfCorporateCustomerExists(createCarRentalForCorporateCustomerRequest.getCorporateCustomerId());
 
 		var price = calculatePriceForCorporateCustomer(createCarRentalForCorporateCustomerRequest).getData();
 
@@ -129,6 +143,9 @@ public class CarRentalManager implements CarRentalService {
 		checkIfCarExistsById(updateCarRentalForCorporateCustomerRequest.getCarId());
 		checkIfCarRentalExistsById(updateCarRentalForCorporateCustomerRequest.getCarRentalId());
 		checkIfItCanBeRented(updateCarRentalForCorporateCustomerRequest.getStartDate(), updateCarRentalForCorporateCustomerRequest.getReturnDate(), updateCarRentalForCorporateCustomerRequest.getCarId(),updateCarRentalForCorporateCustomerRequest.getCarRentalId());
+		checkIfReturnDateAfterStartDate(updateCarRentalForCorporateCustomerRequest.getStartDate(), updateCarRentalForCorporateCustomerRequest.getReturnDate());
+		checkIfStartDateBeforeToday(updateCarRentalForCorporateCustomerRequest.getStartDate());
+		checkIfCorporateCustomerExists(updateCarRentalForCorporateCustomerRequest.getCorporateCustomerId());
 
 		this.orderedAdditionalServiceService.deleteAllByCarRentelId(updateCarRentalForCorporateCustomerRequest.getCarRentalId());
 		insertAddtionalServices(updateCarRentalForCorporateCustomerRequest.getAdditionalServiceIds(),updateCarRentalForCorporateCustomerRequest.getCarRentalId());
@@ -154,6 +171,9 @@ public class CarRentalManager implements CarRentalService {
 		checkIfCarExistsById(updateCarRentalForIndividualCustomerRequest.getCarId());
 		checkIfCarRentalExistsById(updateCarRentalForIndividualCustomerRequest.getCarRentalId());
 		checkIfItCanBeRented(updateCarRentalForIndividualCustomerRequest.getStartDate(), updateCarRentalForIndividualCustomerRequest.getReturnDate(), updateCarRentalForIndividualCustomerRequest.getCarId(),updateCarRentalForIndividualCustomerRequest.getCarRentalId());
+		checkIfReturnDateAfterStartDate(updateCarRentalForIndividualCustomerRequest.getStartDate(), updateCarRentalForIndividualCustomerRequest.getReturnDate());
+		checkIfStartDateBeforeToday(updateCarRentalForIndividualCustomerRequest.getStartDate());
+		checkIfIndividualCustomerExists(updateCarRentalForIndividualCustomerRequest.getIndividualCustomerId());
 
 		this.orderedAdditionalServiceService.deleteAllByCarRentelId(updateCarRentalForIndividualCustomerRequest.getCarRentalId());
 		insertAddtionalServices(updateCarRentalForIndividualCustomerRequest.getAdditionalServiceIds(),updateCarRentalForIndividualCustomerRequest.getCarRentalId());
@@ -178,7 +198,6 @@ public class CarRentalManager implements CarRentalService {
 	{
 		checkIfCarRentalExistsById(deleteCarRentalForIndividualCustomerRequest.getCarRentalId());
 		
-		//CarRental carRental = this.modelMapperService.forRequest().map(deleteCarRentalForIndividualCustomerRequest, CarRental.class);
 		this.carRentalDao.deleteById(deleteCarRentalForIndividualCustomerRequest.getCarRentalId());
 		
 		return new SuccessResult("Car Rental Deleted Successfully");
@@ -226,6 +245,8 @@ public class CarRentalManager implements CarRentalService {
 	@Override
 	public DataResult<Double> calculatePriceForCorporateCustomer(CreateCarRentalForCorporateCustomerRequest createCarRentalForCorporateCustomerRequest) throws BusinessException
 	{
+
+
 		var result = calculatePrice(createCarRentalForCorporateCustomerRequest.getCarId(), createCarRentalForCorporateCustomerRequest.getStartDate(), createCarRentalForCorporateCustomerRequest.getReturnDate(),
 		createCarRentalForCorporateCustomerRequest.getAdditionalServiceIds(),
 		createCarRentalForCorporateCustomerRequest.getStartCityId(),
@@ -299,17 +320,17 @@ public class CarRentalManager implements CarRentalService {
 		return true;
 	}
 
-	private long findTheNumberOfDaysToRent(LocalDate startDate, LocalDate returnDate) throws BusinessException 
+	private long findTheNumberOfDaysToRent(LocalDate startDate, LocalDate returnDate)
 	{
 		long days = ChronoUnit.DAYS.between(startDate, returnDate);
-		if (days > 0)
-			return days;
-		throw new BusinessException("Return date cannot be earlier than start date!");
+		
+		return (days==0) ? 1 : days;
+		
 	}
 
 	private Result checkIfCarMaintenance(int carId) throws BusinessException 
 	{
-		var result = this.carMaintenanceService.getByCar_CarIdAndReturnDate(carId, null);
+		var result = this.carMaintenanceService.getByCarIdAndReturnDate(carId, null);
 
 		if (result.getData() == null) {
 
@@ -359,5 +380,29 @@ public class CarRentalManager implements CarRentalService {
 		updateInvoiceRequest.setTotalPrice(price);
 		updateInvoiceRequest.setCustomerId(customerId);
 		this.invoiceService.update(updateInvoiceRequest);
+	}
+
+	private void checkIfStartDateBeforeToday(LocalDate startDate) throws BusinessException{
+		
+		LocalDate now = LocalDate.now();
+
+		if(startDate.isBefore(now)){
+			throw new BusinessException("Start date must be today or a date after today");
+		}
+	}
+
+	private void checkIfReturnDateAfterStartDate(LocalDate startDate, LocalDate returnDate) throws BusinessException{
+		
+		if(startDate.isAfter(returnDate)){
+			throw new BusinessException("Start date must be after return date");
+		}
+	}
+
+	private void checkIfCorporateCustomerExists(int corporateCustomerId) throws BusinessException{
+		this.corporateCustomerService.checkIfExistByCorporateCustomerId(corporateCustomerId);
+	}
+
+	private void checkIfIndividualCustomerExists(int individualCustomerId) throws BusinessException{
+		this.individualCustomerService.checkIfExistByIndividualCustomerId(individualCustomerId);
 	}
 }
