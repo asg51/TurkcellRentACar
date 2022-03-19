@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "invoices")
 public class Invoice 
 {
-
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "invoice_id")

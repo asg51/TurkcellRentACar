@@ -66,4 +66,8 @@ public class CarRental
 
 	@OneToOne(mappedBy = "carRental")
 	private Invoice invoice;
+
+	@OneToOne()
+    @JoinColumn(name = "payment_id" )
+	private Payment payment;
 }
