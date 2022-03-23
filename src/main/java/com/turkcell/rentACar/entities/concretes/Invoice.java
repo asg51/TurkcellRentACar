@@ -42,4 +42,7 @@ public class Invoice
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @OneToOne(mappedBy = "invoice")
+    private Payment payment;
 }

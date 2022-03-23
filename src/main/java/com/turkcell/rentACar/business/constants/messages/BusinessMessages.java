@@ -1,6 +1,6 @@
 package com.turkcell.rentACar.business.constants.messages;
 
-public class BusinessMessages 
+public interface BusinessMessages extends AddedMessages, UpdatedMessages, DeletedMessages, ListedMessages, GettedMessages, NotFoundMessages, AlreadyExistsMessages, SpecifikErrorMessages
 {
-    public static final String CORPORATE_NOT_FOUND = "";
+
 }

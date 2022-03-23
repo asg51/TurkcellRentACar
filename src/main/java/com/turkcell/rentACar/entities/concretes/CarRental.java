@@ -51,9 +51,6 @@ public class CarRental
     @Column(name = "return_kilometer")
     private double returnKilometer;
 
-	@Column(name = "price")
-	private double price;
-
 	@Column(name = "rented_days")
 	private long rentedDays;
 
@@ -61,13 +58,13 @@ public class CarRental
 	@JoinColumn(name = "car_id")
 	private Car car;
 
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
+
 	@OneToMany(mappedBy ="carRental")
 	private List<OrderedAdditionalService> orderedAdditionalService;
 
-	@OneToOne(mappedBy = "carRental")
-	private Invoice invoice;
-
-	@OneToOne()
-    @JoinColumn(name = "payment_id" )
-	private Payment payment;
+	@OneToMany(mappedBy ="carRental")
+	private List<Invoice> invoices;
 }
