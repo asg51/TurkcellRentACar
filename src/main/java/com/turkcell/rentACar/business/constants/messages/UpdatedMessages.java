@@ -25,4 +25,6 @@ public interface UpdatedMessages
     public static final String ORDERED_ADDITIONAL_UPDATED = "Ordered Additional Updated Succesfully";
 
     public static final String PAYMENT_UPDATED = "Payment Updated Succesfully";
+
+    public static final String CUSTOMER_CARD_UPDATED = "Customer Card Updated Succesfully";
 }

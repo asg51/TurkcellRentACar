@@ -26,5 +26,7 @@ public interface NotFoundMessages
 
     public static final String ORDERED_ADDITIONAL_NOT_FOUND = "Ordered Additional Not Found";
 
-    public static final String PAYMENT_NOT_FOUND = "Payment Not Found";    
+    public static final String PAYMENT_NOT_FOUND = "Payment Not Found";
+
+    public static final String CUSTOMER_CARD_NOT_FOUND = "Customer Card Not Found";
 }

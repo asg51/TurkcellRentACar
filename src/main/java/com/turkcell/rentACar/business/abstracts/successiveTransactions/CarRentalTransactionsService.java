@@ -1,0 +1,22 @@
+package com.turkcell.rentACar.business.abstracts.successiveTransactions;
+
+import com.turkcell.rentACar.api.models.CarRentalReturnProcessInformationForCorporateModel;
+import com.turkcell.rentACar.api.models.CarRentalReturnProcessInformationForIndividualModel;
+import com.turkcell.rentACar.api.models.CarRentalTransactionInformationForCorporateCustomerModel;
+import com.turkcell.rentACar.api.models.CarRentalTransactionInformationForIndividualCustomerModel;
+import com.turkcell.rentACar.api.models.ReturnLateArrivedRentalCarForCorporateCustomerModel;
+import com.turkcell.rentACar.api.models.ReturnLateArrivedRentalCarForIndivualCustomerModel;
+import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
+import com.turkcell.rentACar.core.utilities.results.Result;
+
+public interface CarRentalTransactionsService 
+{
+    Result makeACarRentalForCorporateCustomer(CarRentalTransactionInformationForCorporateCustomerModel carRentalTransactionInformationForCorporateCustomerModel) throws BusinessException;
+    Result makeACarRentalForIndivualCustomer(CarRentalTransactionInformationForIndividualCustomerModel carRentalTransactionInformationForIndividualCustomerModel) throws BusinessException;
+    
+    Result returnTheRentalCarForCorporateCustomer(CarRentalReturnProcessInformationForCorporateModel carRentalReturnProcessInformationForCorporateModel) throws BusinessException;
+    Result returnTheRentalCarForIndividualCustomer(CarRentalReturnProcessInformationForIndividualModel carRentalReturnProcessInformationForIndividualModel) throws BusinessException;
+    
+    Result returnLateArrivedRentalCarForCorporateCustomer(ReturnLateArrivedRentalCarForCorporateCustomerModel returnLateArrivedRentalCarForCorporateCustomerModel) throws BusinessException;
+    Result returnLateArrivedRentalCarForIndivualCustomer(ReturnLateArrivedRentalCarForIndivualCustomerModel returnLateArrivedRentalCarForIndivualCustomerModel) throws BusinessException;
+}

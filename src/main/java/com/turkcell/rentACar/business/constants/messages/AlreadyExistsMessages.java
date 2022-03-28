@@ -30,4 +30,6 @@ public interface AlreadyExistsMessages
     public static final String ORDERED_ADDITIONAL_ALREADY_EXISTS = "Ordered Additional Already Exists";
 
     public static final String PAYMENT_ALREADY_EXISTS = "Payment Already Exists";
+
+    public static final String CUSTOMER_CARD_ALREADY_EXISTS = "Customer Card Already Exists";
 }

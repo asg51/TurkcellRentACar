@@ -26,4 +26,6 @@ public interface AddedMessages
     public static final String ORDERED_ADDITIONAL_LIST_ADDED = "Ordered Additional List Added Succesfully";
 
     public static final String PAYMENT_ADDED = "Payment Added Succesfully";
+
+    public static final String CUSTOMER_CARD_ADDED = "Customer Card Added Succesfully";
 }

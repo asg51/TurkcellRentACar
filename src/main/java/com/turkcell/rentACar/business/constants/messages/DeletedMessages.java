@@ -27,4 +27,6 @@ public interface DeletedMessages
     public static final String ORDERED_ADDITIONAL_DELETED = "Ordered Additional Deleted Succesfully";
 
     public static final String PAYMENT_DELETED = "Payment Deleted Succesfully";
+
+    public static final String CUSTOMER_CARD_DELETED = "Customer Card Deleted Succesfully";
 }

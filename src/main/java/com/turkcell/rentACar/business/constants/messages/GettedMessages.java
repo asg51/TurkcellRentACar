@@ -24,5 +24,7 @@ public interface GettedMessages
 
     public static final String ORDERED_ADDITIONAL_GETTED = "Ordered Additional Getted Succesfully";
 
-    public static final String PAYMENT_GETTED = "Payment Getted Succesfully";    
+    public static final String PAYMENT_GETTED = "Payment Getted Succesfully";
+
+    public static final String CUSTOMER_CARD_GETTED = "Customer Card Getted Succesfully";    
 }

@@ -25,4 +25,6 @@ public interface ListedMessages
     public static final String ORDERED_ADDITIONAL_LISTED = "Ordered Additionals Listed Succesfully";
 
     public static final String PAYMENT_LISTED = "Payments Listed Succesfully";
+
+    public static final String CUSTOMER_CARD_LISTED = "Customer Cards Listed Succesfully";
 }

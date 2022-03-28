@@ -2,6 +2,8 @@ package com.turkcell.rentACar;
 
 import com.turkcell.rentACar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentACar.core.utilities.results.ErrorDataResult;
+import com.turkcell.rentACar.core.utilities.results.ErrorResult;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -30,6 +32,7 @@ public class RentACarApplication
     public ModelMapper getModelMapper() {
         return new ModelMapper();
     }
+
     @ExceptionHandler
     @ResponseStatus(code= HttpStatus.BAD_REQUEST)
     public ErrorDataResult<Object> handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException){
@@ -40,13 +43,11 @@ public class RentACarApplication
         ErrorDataResult<Object> errorDataResult = new ErrorDataResult<Object>(validationErrors,"Validation Error");
         return errorDataResult;
     }
+
     @ExceptionHandler
     @ResponseStatus(code= HttpStatus.BAD_REQUEST)
-    public ErrorDataResult<Object> handleBusinessExceptions(BusinessException businessException){
-        ErrorDataResult<Object> errorDataResult = new ErrorDataResult<Object>(businessException.getMessage(),"Business Exception Error");
-        return errorDataResult;
+    public ErrorResult handleBusinessExceptions(BusinessException businessException){
+        ErrorResult errorResult = new ErrorResult("Business Exception Error :"+businessException.getMessage());
+        return errorResult;
     }
 }
-
-
-
