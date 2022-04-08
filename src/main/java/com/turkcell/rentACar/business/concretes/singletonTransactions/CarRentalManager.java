@@ -94,7 +94,7 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.modelMapperService.forRequest().map(createCarRentalForIndividualCustomerRequest, CarRental.class);
 		carRental.setCarRentalId(0);
-		carRental.setRentedDays(dateOperations.findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
+		carRental.setReturnStatus(false);
 		carRental.getCustomer().setUserId(createCarRentalForIndividualCustomerRequest.getIndividualCustomerId());
 
 		carRental = this.carRentalDao.save(carRental);
@@ -117,7 +117,7 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.modelMapperService.forRequest().map(createCarRentalForCorporateCustomerRequest, CarRental.class);
 		carRental.setCarRentalId(0);
-		carRental.setRentedDays(dateOperations.findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
+		carRental.setReturnStatus(false);
 		carRental.getCustomer().setUserId(createCarRentalForCorporateCustomerRequest.getCorporateCustomerId());
 
 		carRental = this.carRentalDao.save(carRental);
@@ -135,10 +135,12 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.carRentalDao.getById(returnTheRentalCarForCorporateCustomerRequest.getCarRentalId());
 
+		checkIfItIsReturned(carRental.getCarRentalId());
         checkForLateReturn(carRental.getReturnDate(),returnTheRentalCarForCorporateCustomerRequest.getReturnDate());
 		checkIfTheCustomerIsTheSame(returnTheRentalCarForCorporateCustomerRequest.getCorporateCustomerId(), carRental.getCustomer().getCustomerId());
 
 		carRental.setReturnKilometer(returnTheRentalCarForCorporateCustomerRequest.getReturnKilometer());
+		carRental.setReturnStatus(true);
 
 		carRental = this.carRentalDao.save(carRental);
 
@@ -155,10 +157,12 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.carRentalDao.getById(returnTheRentalCarForIndividualCustomerRequest.getCarRentalId());
 
+		checkIfItIsReturned(carRental.getCarRentalId());
         checkForLateReturn(carRental.getReturnDate(),returnTheRentalCarForIndividualCustomerRequest.getReturnDate());
 		checkIfTheCustomerIsTheSame(returnTheRentalCarForIndividualCustomerRequest.getIndividualCustomerId(), carRental.getCustomer().getCustomerId());
 
 		carRental.setReturnKilometer(returnTheRentalCarForIndividualCustomerRequest.getReturnKilometer());
+		carRental.setReturnStatus(true);
 
 		carRental = this.carRentalDao.save(carRental);
 
@@ -175,11 +179,12 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.carRentalDao.getById(lateReturnTheRentalCarForCorporateCustomerRequest.getCarRentalId());
 
-        checkForLateReturn(carRental.getReturnDate(),lateReturnTheRentalCarForCorporateCustomerRequest.getReturnDate());
+		checkIfItIsReturned(carRental.getCarRentalId());
 		checkIfTheCustomerIsTheSame(lateReturnTheRentalCarForCorporateCustomerRequest.getCorporateCustomerId(), carRental.getCustomer().getCustomerId());
 
 		carRental.setReturnKilometer(lateReturnTheRentalCarForCorporateCustomerRequest.getReturnKilometer());
         carRental.setReturnDate(lateReturnTheRentalCarForCorporateCustomerRequest.getReturnDate());
+		carRental.setReturnStatus(true);
 
 		carRental = this.carRentalDao.save(carRental);
 
@@ -196,11 +201,12 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.carRentalDao.getById(lateReturnTheRentalCarForIndividualCustomerRequest.getCarRentalId());
 
-        checkForLateReturn(carRental.getReturnDate(),lateReturnTheRentalCarForIndividualCustomerRequest.getReturnDate());
+		checkIfItIsReturned(carRental.getCarRentalId());
 		checkIfTheCustomerIsTheSame(lateReturnTheRentalCarForIndividualCustomerRequest.getIndividualCustomerId(), carRental.getCustomer().getCustomerId());
 
 		carRental.setReturnKilometer(lateReturnTheRentalCarForIndividualCustomerRequest.getReturnKilometer());
         carRental.setReturnDate(lateReturnTheRentalCarForIndividualCustomerRequest.getReturnDate());
+		carRental.setReturnStatus(true);
 
 		carRental = this.carRentalDao.save(carRental);
 
@@ -223,7 +229,6 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.modelMapperService.forRequest().map(updateCarRentalForCorporateCustomerRequest, CarRental.class);
 		carRental.setStartingKilometer(startingKilometer);
-		carRental.setRentedDays(dateOperations.findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
 		carRental.getCustomer().setUserId(updateCarRentalForCorporateCustomerRequest.getCorporateCustomerId());
 
 		carRental =	this.carRentalDao.save(carRental);
@@ -245,7 +250,6 @@ public class CarRentalManager implements CarRentalService
 
 		CarRental carRental = this.modelMapperService.forRequest().map(updateCarRentalForIndividualCustomerRequest, CarRental.class);
 		carRental.setStartingKilometer(startingKilometer);
-		carRental.setRentedDays(dateOperations.findTheNumberOfDaysToRent(carRental.getStartDate(), carRental.getReturnDate()));
 		carRental.getCustomer().setUserId(updateCarRentalForIndividualCustomerRequest.getIndividualCustomerId());
 
 		this.carRentalDao.save(carRental);
@@ -458,5 +462,15 @@ public class CarRentalManager implements CarRentalService
        {
            throw new BusinessException("");
        }
+    
+	}
+    private void checkIfItIsReturned(int rentACarId) throws BusinessException
+    {
+       CarRental carRental = carRentalDao.getById(rentACarId);
+
+	   if(carRental.isReturnStatus())
+	   {
+			throw new BusinessException("");
+	   }
     }
 }

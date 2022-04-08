@@ -87,11 +87,11 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
 
         CarRentalDto carRentalDto = insertCarRental(carRentalTransactionInformationForCorporateCustomerModel);
 
-        insertOrderedAdditionalService(carRentalTransactionInformationForCorporateCustomerModel.getOrderedAdditionalServiceIds(),carRentalDto.getCarRentalId());
+        insertOrderedAdditionalService(carRentalTransactionInformationForCorporateCustomerModel.getAdditionalServiceIds(),carRentalDto.getCarRentalId());
 
         InvoiceDto invoiceDto = insertInvoice(carRentalDto.getCarRentalId(), carRentalTransactionInformationForCorporateCustomerModel.getCorporateCustomerId(), price);
 
-        insertPayment(invoiceDto.getInvoiceId(),carRentalTransactionInformationForCorporateCustomerModel.getCorporateCustomerId(),price);
+        insertPayment(carRentalTransactionInformationForCorporateCustomerModel.getCorporateCustomerId(),invoiceDto.getInvoiceId(),price);
 
         return new SuccessResult();
     }
@@ -109,11 +109,11 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
 
         CarRentalDto carRentalDto = insertCarRental(carRentalTransactionInformationForIndiviualCustomerModel);
 
-        insertOrderedAdditionalService(carRentalTransactionInformationForIndiviualCustomerModel.getOrderedAdditionalServiceIds(),carRentalDto.getCarRentalId());
+        insertOrderedAdditionalService(carRentalTransactionInformationForIndiviualCustomerModel.getAdditionalServiceIds(),carRentalDto.getCarRentalId());
 
         InvoiceDto invoiceDto = insertInvoice(carRentalDto.getCarRentalId(), carRentalTransactionInformationForIndiviualCustomerModel.getIndividualCustomerId(), price);
 
-        insertPayment(invoiceDto.getInvoiceId(),carRentalTransactionInformationForIndiviualCustomerModel.getIndividualCustomerId(),price);
+        insertPayment(carRentalTransactionInformationForIndiviualCustomerModel.getIndividualCustomerId(),invoiceDto.getInvoiceId(),price);
 
         return new SuccessResult();
     }
@@ -127,7 +127,6 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
         CarRentalDto carRentalDto = returnTheRentalCarForCorporateCustomer(returnTheRentalCarForCorporateCustomerRequest);
 
         UpdateCarKilometerInformationRequest updateCarKilometerInformationRequest = new UpdateCarKilometerInformationRequest(carRentalDto.getCar_CarId(), carRentalReturnProcessInformationForCorporateModel.getReturnKilometer());
-
         updateOfKilometresForCar(updateCarKilometerInformationRequest);
     
         return new SuccessResult();
@@ -142,7 +141,6 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
         CarRentalDto carRentalDto = returnTheRentalCarForIndividualCustomer(returnTheRentalCarForIndivualCustomerRequest);
 
         UpdateCarKilometerInformationRequest updateCarKilometerInformationRequest = new UpdateCarKilometerInformationRequest(carRentalDto.getCar_CarId(), carRentalReturnProcessInformationForIndividualModel.getReturnKilometer());
-
         updateOfKilometresForCar(updateCarKilometerInformationRequest);
     
         return new SuccessResult();
@@ -171,7 +169,10 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
 
         InvoiceDto invoiceDto = insertInvoice(returnLateArrivedRentalCarForCorporateCustomerModel.getCarRentalId(), returnLateArrivedRentalCarForCorporateCustomerModel.getCorporateCustomerId(), price);
         
-        insertPayment(carRentalDto.getCar_CarId(), invoiceDto.getInvoiceId(), price);
+        insertPayment(returnLateArrivedRentalCarForCorporateCustomerModel.getCorporateCustomerId(), invoiceDto.getInvoiceId(), price);
+
+        UpdateCarKilometerInformationRequest updateCarKilometerInformationRequest = new UpdateCarKilometerInformationRequest(carRentalDto.getCar_CarId(), returnLateArrivedRentalCarForCorporateCustomerModel.getReturnKilometer());
+        updateOfKilometresForCar(updateCarKilometerInformationRequest);
 
         return new SuccessResult();
     }
@@ -200,6 +201,9 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
         InvoiceDto invoiceDto = insertInvoice(returnLateArrivedRentalCarForIndivualCustomerModel.getCarRentalId(), returnLateArrivedRentalCarForIndivualCustomerModel.getIndividualCustomerId(), price);
         
         insertPayment(returnLateArrivedRentalCarForIndivualCustomerModel.getIndividualCustomerId(), invoiceDto.getInvoiceId(), price);
+
+        UpdateCarKilometerInformationRequest updateCarKilometerInformationRequest = new UpdateCarKilometerInformationRequest(carRentalDto.getCar_CarId(), returnLateArrivedRentalCarForIndivualCustomerModel.getReturnKilometer());
+        updateOfKilometresForCar(updateCarKilometerInformationRequest);
 
         return new SuccessResult();
     }
@@ -239,9 +243,9 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
         return carRentalDto;
     }
 
-    private void insertOrderedAdditionalService(List<Integer> orderedAdditionalServiceIds, int carRentalId) throws BusinessException
+    private void insertOrderedAdditionalService(List<Integer> additionalServiceIds, int carRentalId) throws BusinessException
     {
-        this.orderedAdditionalServiceService.addRange(orderedAdditionalServiceIds, carRentalId);
+        this.orderedAdditionalServiceService.addServices(additionalServiceIds, carRentalId);
     }
 
     private InvoiceDto insertInvoice(int carRentalId, int customerId,double price) throws BusinessException

@@ -1,0 +1,10 @@
+package com.turkcell.elearner.application.features.commands;
+
+public class CreateAccountTypeAggregeate 
+{
+    @TargetAggregateIdentifier
+    private long accountTypeId;
+    private String accountName;
+    private double price;
+    private String description;
+}

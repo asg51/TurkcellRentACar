@@ -47,7 +47,8 @@ public class InvoiceManager implements InvoiceService
     {
 		Invoice invoice = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		invoice.setInvoiceId(0);
-		
+		invoice.getCustomer().setUserId(createInvoiceRequest.getCustomerId());
+
 		invoice = this.invoiceDao.save(invoice);
 
 		InvoiceDto invoiceDto = this.modelMapperService.forDto().map(invoice, InvoiceDto.class);

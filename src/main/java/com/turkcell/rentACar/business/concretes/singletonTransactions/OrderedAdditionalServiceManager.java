@@ -58,9 +58,9 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public Result addRange(List<Integer> orderedAdditionalServiceIds, int carRentalId) throws BusinessException 
+	public Result addServices(List<Integer> aditionalServiceIds, int carRentalId) throws BusinessException 
 	{
-		for(var item : orderedAdditionalServiceIds)
+		for(var item : aditionalServiceIds)
 		{
 			CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest= new CreateOrderedAdditionalServiceRequest(carRentalId, item);
 

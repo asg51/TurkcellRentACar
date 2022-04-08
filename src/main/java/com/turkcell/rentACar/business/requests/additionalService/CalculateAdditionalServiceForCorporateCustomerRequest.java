@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CalculateAdditionalServiceForCorporateCustomerRequest 
 {
     @NotNull
-    private List<Integer> orderedAdditionalServiceIds;
+    private List<Integer> additionalServiceIds;
 
     @NotNull
     private LocalDate startDate;

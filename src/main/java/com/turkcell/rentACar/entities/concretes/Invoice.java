@@ -39,7 +39,7 @@ public class Invoice
     @JoinColumn(name = "car_rental_id" )
     private CarRental carRental;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne()
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

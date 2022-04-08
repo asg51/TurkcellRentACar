@@ -126,7 +126,7 @@ public class AdditionalServiceManager implements AdditionalServiceService
         long days= dateOperations.findTheNumberOfDaysToRent(calculateAdditionalServiceForCorporateCustomerRequest.getStartDate(),
         calculateAdditionalServiceForCorporateCustomerRequest.getReturnDate());
 
-        var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForCorporateCustomerRequest.getOrderedAdditionalServiceIds()).getData();
+        var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForCorporateCustomerRequest.getAdditionalServiceIds()).getData();
         
         for (var additionalService : additionalServiceListDtos) {
             price += additionalService.getDailyPrice() * days;
@@ -144,7 +144,7 @@ public class AdditionalServiceManager implements AdditionalServiceService
         long days= dateOperations.findTheNumberOfDaysToRent(calculateAdditionalServiceForIndividualCustomerRequest.getStartDate(),
         calculateAdditionalServiceForIndividualCustomerRequest.getReturnDate());
 
-        var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForIndividualCustomerRequest.getOrderedAdditionalServiceIds()).getData();
+        var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForIndividualCustomerRequest.getAdditionalServiceIds()).getData();
         
         for (var additionalService : additionalServiceListDtos) {
             price += additionalService.getDailyPrice() * days;

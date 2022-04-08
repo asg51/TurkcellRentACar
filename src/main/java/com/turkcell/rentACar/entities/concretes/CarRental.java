@@ -48,9 +48,9 @@ public class CarRental
 
     @Column(name = "return_kilometer")
     private double returnKilometer;
-
-	@Column(name = "rented_days")
-	private long rentedDays;
+	
+	@Column(name = "return_status")
+	private boolean returnStatus;
 
 	@ManyToOne()
 	@JoinColumn(name = "car_id")

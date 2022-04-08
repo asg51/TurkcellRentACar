@@ -14,7 +14,7 @@ import com.turkcell.rentACar.core.utilities.results.Result;
 public interface OrderedAdditionalServiceService 
 {
     Result add(CreateOrderedAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException;
-    Result addRange(List<Integer> orderedAdditionalServiceIds, int carRentalId) throws BusinessException;
+    Result addServices(List<Integer> additionalServiceIds, int carRentalId) throws BusinessException;
     Result update(UpdateOrderedAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException;
     Result delete(DeleteOrderedAdditionalServiceRequest deleteAdditionalServiceRequest) throws BusinessException;
     Result deleteAllByCarRentelId(int carRentelId) throws BusinessException;

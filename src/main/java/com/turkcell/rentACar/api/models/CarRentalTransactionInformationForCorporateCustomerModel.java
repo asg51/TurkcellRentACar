@@ -36,7 +36,7 @@ public class CarRentalTransactionInformationForCorporateCustomerModel
     private int endCityId;
 
     @NotNull
-    private List<Integer> orderedAdditionalServiceIds;
+    private List<Integer> additionalServiceIds;
     
     @NotNull
     private BankInformation bankInformation;
