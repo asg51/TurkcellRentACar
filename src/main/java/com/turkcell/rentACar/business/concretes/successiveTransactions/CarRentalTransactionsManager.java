@@ -42,6 +42,7 @@ import com.turkcell.rentACar.core.utilities.results.Result;
 import com.turkcell.rentACar.core.utilities.results.SuccessResult;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -75,7 +76,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result makeACarRentalForCorporateCustomer(CarRentalTransactionInformationForCorporateCustomerModel carRentalTransactionInformationForCorporateCustomerModel) throws BusinessException 
     {
         CalculatePriceCarRentalForCorporateCustomerRequest calculateCarRentalForCorporateCustomerRequest = this.modelMapperService.forRequest().map(carRentalTransactionInformationForCorporateCustomerModel, CalculatePriceCarRentalForCorporateCustomerRequest.class);
@@ -97,7 +98,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result makeACarRentalForIndivualCustomer(CarRentalTransactionInformationForIndividualCustomerModel carRentalTransactionInformationForIndiviualCustomerModel) throws BusinessException 
     {
         CalculatePriceCarRentalForIndividualCustomerRequest calculatePriceCarRentalForIndividualCustomerRequest = this.modelMapperService.forRequest().map(carRentalTransactionInformationForIndiviualCustomerModel, CalculatePriceCarRentalForIndividualCustomerRequest.class);
@@ -119,7 +120,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result returnTheRentalCarForCorporateCustomer(CarRentalReturnProcessInformationForCorporateModel carRentalReturnProcessInformationForCorporateModel)throws BusinessException 
     {
         ReturnTheRentalCarForCorporateCustomerRequest returnTheRentalCarForCorporateCustomerRequest = this.modelMapperService.forRequest().map(carRentalReturnProcessInformationForCorporateModel, ReturnTheRentalCarForCorporateCustomerRequest.class);
@@ -133,7 +134,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result returnTheRentalCarForIndividualCustomer(CarRentalReturnProcessInformationForIndividualModel carRentalReturnProcessInformationForIndividualModel) throws BusinessException 
     {
         ReturnTheRentalCarForIndividualCustomerRequest returnTheRentalCarForIndivualCustomerRequest = this.modelMapperService.forRequest().map(carRentalReturnProcessInformationForIndividualModel, ReturnTheRentalCarForIndividualCustomerRequest.class);
@@ -147,7 +148,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result returnLateArrivedRentalCarForCorporateCustomer(ReturnLateArrivedRentalCarForCorporateCustomerModel returnLateArrivedRentalCarForCorporateCustomerModel) throws BusinessException 
     {
         CarRentalDto carRentalDto = this.carRentalService.getById(returnLateArrivedRentalCarForCorporateCustomerModel.getCarRentalId()).getData();
@@ -178,7 +179,7 @@ public class CarRentalTransactionsManager implements CarRentalTransactionsServic
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = BusinessException.class)
     public Result returnLateArrivedRentalCarForIndivualCustomer(ReturnLateArrivedRentalCarForIndivualCustomerModel returnLateArrivedRentalCarForIndivualCustomerModel) throws BusinessException 
     {
         CarRentalDto carRentalDto = this.carRentalService.getById(returnLateArrivedRentalCarForIndivualCustomerModel.getCarRentalId()).getData();

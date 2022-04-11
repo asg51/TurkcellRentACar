@@ -107,9 +107,9 @@ public class CarCrashInformationManager implements CarCrashInformationService
     @Override
     public DataResult<List<CarCrashInformationListDto>> getAllSorted(Sort.Direction direction) 
     {
-        Sort s = Sort.by(direction, "carCrashInformationId");
+        Sort sort = Sort.by(direction, "carCrashInformationId");
 
-        List<CarCrashInformation> result = this.carCrashInformationDao.findAll(s);
+        List<CarCrashInformation> result = this.carCrashInformationDao.findAll(sort);
 
         List<CarCrashInformationListDto> response = result.stream()
                 .map(carCrashInformation -> this.modelMapperService.forDto().map(carCrashInformation, CarCrashInformationListDto.class))
@@ -122,6 +122,7 @@ public class CarCrashInformationManager implements CarCrashInformationService
     public Result update(UpdateCarCrashInformationRequest updateCarCrashInformationRequest) throws BusinessException 
     {
         checkIfCarCrashInformatioExists(updateCarCrashInformationRequest.getCarCrashInformationId());
+        checkIfCarExists(updateCarCrashInformationRequest.getCarId());
 
         CarCrashInformation carCrashInformationUpdate = this.modelMapperService.forRequest().map(updateCarCrashInformationRequest, CarCrashInformation.class);
 

@@ -14,5 +14,7 @@ public interface BrandMessages
 
     public static final String BRAND_NOT_FOUND = "Brand Not Found";
 
+    public static final String BRAND_FOUND = "Brand Found";
+
     public static final String BRAND_UPDATED = "Brand Updated Succesfully";
 }

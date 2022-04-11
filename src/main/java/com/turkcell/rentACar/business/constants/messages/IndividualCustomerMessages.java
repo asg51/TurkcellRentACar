@@ -15,5 +15,7 @@ public interface IndividualCustomerMessages
 
     public static final String INDIVIDUAL_CUSTOMER_NOT_FOUND = "Individual Customer Not Found";
 
+    public static final String INDIVIDUAL_CUSTOMER_FOUND = "Individual Customer Found";
+
     public static final String INDIVIDUAL_CUSTOMER_UPDATED = "Individual Customer Updated Succesfully";
 }

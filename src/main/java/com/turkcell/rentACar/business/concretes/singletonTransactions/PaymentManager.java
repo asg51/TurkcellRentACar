@@ -50,7 +50,7 @@ public class PaymentManager implements PaymentService
         List<Payment> result = this.paymentDao.findAll();
 	    	List<PaymentListDto> response = result.stream().map(payment->this.modelMapperService.forDto().map(payment,PaymentListDto.class)).collect(Collectors.toList());
 		
-		    return new SuccessDataResult<List<PaymentListDto>>(response,BusinessMessages.PAYMENT_LISTED);
+		return new SuccessDataResult<List<PaymentListDto>>(response,BusinessMessages.PAYMENT_LISTED);
     }
 
     @Override
@@ -69,7 +69,6 @@ public class PaymentManager implements PaymentService
         return new SuccessResult(BusinessMessages.PAYMENT_ADDED);
     }
 
-
     @Override
     public Result update(UpdatePaymentRequest updatePaymentRequest) throws BusinessException 
     {
@@ -81,7 +80,7 @@ public class PaymentManager implements PaymentService
         
         this.paymentDao.save(payment); 
       
-		    return new SuccessResult(BusinessMessages.PAYMENT_UPDATED);
+		return new SuccessResult(BusinessMessages.PAYMENT_UPDATED);
     }
 
     @Override
@@ -105,19 +104,19 @@ public class PaymentManager implements PaymentService
     
     private void checkIfExistByCarId(int paymentId) throws BusinessException 
     {
-      if(!this.paymentDao.existsById(paymentId)) 
-      {
-        throw new BusinessException(BusinessMessages.PAYMENT_NOT_FOUND);
-      }
+        if(!this.paymentDao.existsById(paymentId)) 
+        {
+            throw new BusinessException(BusinessMessages.PAYMENT_NOT_FOUND);
+        }
     }
 
     private void checkIfExistByInvoiceId(int invoiceId) throws BusinessException
     {
-      this.invoiceService.checkIfExistByInvoiceId(invoiceId);
+        this.invoiceService.checkIfExistByInvoiceId(invoiceId);
     } 
 
     private void checkIfExistByCustomerId(int customerId) throws BusinessException
     {
-      this.customerService.checkIfExistByCustomerId(customerId);
+        this.customerService.checkIfExistByCustomerId(customerId);
     } 
 }

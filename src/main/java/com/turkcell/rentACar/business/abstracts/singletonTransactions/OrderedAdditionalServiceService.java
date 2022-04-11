@@ -17,7 +17,7 @@ public interface OrderedAdditionalServiceService
     Result addServices(List<Integer> additionalServiceIds, int carRentalId) throws BusinessException;
     Result update(UpdateOrderedAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException;
     Result delete(DeleteOrderedAdditionalServiceRequest deleteAdditionalServiceRequest) throws BusinessException;
-    Result deleteAllByCarRentelId(int carRentelId) throws BusinessException;
+    Result deleteAllByCarRentalId(int carRentelId) throws BusinessException;
     DataResult<List<OrderedAdditionalServiceListDto>> getAll();
     DataResult<OrderedAdditionalServiceDto> getById(int additionalServiceId) throws BusinessException;
     DataResult<List<OrderedAdditionalServiceListDto>> getAllByOrderedAdditionalService_CarRentalId(int carRentalId) throws BusinessException;

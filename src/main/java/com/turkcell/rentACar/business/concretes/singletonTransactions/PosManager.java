@@ -29,9 +29,9 @@ public class PosManager implements PosService
 
         if(result)
         {
-            return new SuccessResult();
+            return new SuccessResult(BusinessMessages.POS_TRANSACTION_SUCCESFULLY);
         }
 
-        throw new BusinessException(BusinessMessages.PAYMENT_FAILED);
+        throw new BusinessException(BusinessMessages.POS_TRANSACTION_FAILED);
     }
 }

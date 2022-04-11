@@ -14,5 +14,9 @@ public interface AdditionalServiceMessages
 
     public static final String ADDITIONAL_SERVICE_NOT_FOUND = "Additional Service Not Found";
 
+    public static final String ADDITIONAL_SERVICE_FOUND = "Additional Service Found";
+
     public static final String ADDITIONAL_SERVICE_UPDATED = "Additional Service Updated Succesfully";
+
+    public static final String ADDITIONAL_SERVICE_CHARGE_CALCULATED = "Additional Service Charge Calculated";
 }

@@ -81,8 +81,7 @@ public class CarRentalManager implements CarRentalService
 	}
 
 	@Override
-	public DataResult<CarRentalDto> rentForIndividualCustomer(
-			CreateCarRentalForIndividualCustomerRequest createCarRentalForIndividualCustomerRequest) throws BusinessException 
+	public DataResult<CarRentalDto> rentForIndividualCustomer(CreateCarRentalForIndividualCustomerRequest createCarRentalForIndividualCustomerRequest) throws BusinessException 
 	{
 		checkIfCarExistsById(createCarRentalForIndividualCustomerRequest.getCarId());
 		checkIfCarMaintenance(createCarRentalForIndividualCustomerRequest.getCarId());
@@ -146,7 +145,7 @@ public class CarRentalManager implements CarRentalService
 
         CarRentalDto carRentalDto= this.modelMapperService.forDto().map(carRental, CarRentalDto.class);
 
-		return new SuccessDataResult<CarRentalDto>(carRentalDto);
+		return new SuccessDataResult<CarRentalDto>(carRentalDto,BusinessMessages.CAR_RENTAL_RETURNED);
     }
 
     @Override
@@ -168,7 +167,7 @@ public class CarRentalManager implements CarRentalService
 
         CarRentalDto carRentalDto= this.modelMapperService.forDto().map(carRental, CarRentalDto.class);
 
-		return new SuccessDataResult<CarRentalDto>(carRentalDto);
+		return new SuccessDataResult<CarRentalDto>(carRentalDto,BusinessMessages.CAR_RENTAL_RETURNED);
     }
 
     @Override
@@ -190,7 +189,7 @@ public class CarRentalManager implements CarRentalService
 
         CarRentalDto carRentalDto= this.modelMapperService.forDto().map(carRental, CarRentalDto.class);
 
-		return new SuccessDataResult<CarRentalDto>(carRentalDto);
+		return new SuccessDataResult<CarRentalDto>(carRentalDto,BusinessMessages.CAR_RENTAL_LATE_RETURNED);
     }
 
     @Override
@@ -212,7 +211,7 @@ public class CarRentalManager implements CarRentalService
 
         CarRentalDto carRentalDto= this.modelMapperService.forDto().map(carRental, CarRentalDto.class);
 
-		return new SuccessDataResult<CarRentalDto>(carRentalDto);
+		return new SuccessDataResult<CarRentalDto>(carRentalDto,BusinessMessages.CAR_RENTAL_LATE_RETURNED);
     }
 
 	@Override
@@ -301,7 +300,7 @@ public class CarRentalManager implements CarRentalService
 		{
 			throw new BusinessException(BusinessMessages.CAR_RENTAL_ALREADY_EXISTS_ON_SPECIFIC_DATE);
 		}
-		return new SuccessResult();
+		return new SuccessResult(BusinessMessages.CAR_RENTAL_NOT_FOUND_ON_SPECIFIC_DATE);
 	}
 
 	@Override
@@ -311,7 +310,7 @@ public class CarRentalManager implements CarRentalService
 		calculatePriceCarRentalForCorporateCustomerRequest.getStartCityId(),
 		calculatePriceCarRentalForCorporateCustomerRequest.getEndCityId());
 
-		return new SuccessDataResult<Double>(result);
+		return new SuccessDataResult<Double>(result,BusinessMessages.CAR_RENTAL_CHARGE_CALCULATED);
 	}
 
 	@Override
@@ -321,7 +320,7 @@ public class CarRentalManager implements CarRentalService
 		calculatePriceCarRentalForIndividualCustomerRequest.getStartCityId(),
 		calculatePriceCarRentalForIndividualCustomerRequest.getEndCityId());
 
-		return new SuccessDataResult<Double>(result);
+		return new SuccessDataResult<Double>(result,BusinessMessages.CAR_RENTAL_CHARGE_CALCULATED);
 	}
 
     @Override
@@ -329,7 +328,7 @@ public class CarRentalManager implements CarRentalService
     {
         var result = calculatePriceForLateReturn(calculatePriceLateReturnTheCarRentalForIndividualCustomerRequest.getCarId(), calculatePriceLateReturnTheCarRentalForIndividualCustomerRequest.getExpectedDate(), calculatePriceLateReturnTheCarRentalForIndividualCustomerRequest.getReturnDate());
 
-		return new SuccessDataResult<Double>(result);
+		return new SuccessDataResult<Double>(result,BusinessMessages.CAR_RENTAL_LATE_RETURN_CHARGE_CALCULATED);
     }
 
     @Override
@@ -337,7 +336,7 @@ public class CarRentalManager implements CarRentalService
     {
         var result = calculatePriceForLateReturn(calculatePriceLateReturnTheCarRentalForCorporateCustomerRequest.getCarId(), calculatePriceLateReturnTheCarRentalForCorporateCustomerRequest.getExpectedDate(), calculatePriceLateReturnTheCarRentalForCorporateCustomerRequest.getReturnDate());
 
-		return new SuccessDataResult<Double>(result);
+		return new SuccessDataResult<Double>(result,BusinessMessages.CAR_RENTAL_LATE_RETURN_CHARGE_CALCULATED);
     }
 
 	@Override
@@ -358,7 +357,7 @@ public class CarRentalManager implements CarRentalService
 			throw new BusinessException(BusinessMessages.CAR_RENTAL_NOT_FOUND);
 		}
 
-		return new SuccessResult();
+		return new SuccessResult(BusinessMessages.CAR_RENTAL_FOUND);
 	}
 
 	private double calculatePrice(int carId, LocalDate startDate, LocalDate returnDate, int startCityId, int endCityId) throws BusinessException
@@ -452,7 +451,7 @@ public class CarRentalManager implements CarRentalService
 	{
 		if(customerId1!=customerId2)
 		{
-			throw new BusinessException("message");
+			throw new BusinessException(BusinessMessages.CAR_RENTAL_CUSTOMER_IS_NOT_THE_SAME);
 		}
 	}
 
@@ -460,17 +459,17 @@ public class CarRentalManager implements CarRentalService
     {
        if(expectedDate.isBefore(incomingDate))
        {
-           throw new BusinessException("");
+           throw new BusinessException(BusinessMessages.CAR_RENTAL_MADE_LATE_RETURN);
        }
-    
 	}
+
     private void checkIfItIsReturned(int rentACarId) throws BusinessException
     {
        CarRental carRental = carRentalDao.getById(rentACarId);
 
 	   if(carRental.isReturnStatus())
 	   {
-			throw new BusinessException("");
+			throw new BusinessException(BusinessMessages.CAR_RENTAL_MADE_RETURN);
 	   }
     }
 }

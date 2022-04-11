@@ -9,6 +9,8 @@ public interface OrderedAdditionalServiceMessages
 
     public static final String ORDERED_ADDITIONAL_DELETED = "Ordered Additional Deleted Succesfully";
 
+    public static final String ORDERED_ADDITIONAL_LIST_DELETED = "Ordered Additional List Deleted Succesfully";
+
     public static final String ORDERED_ADDITIONAL_GETTED = "Ordered Additional Getted Succesfully";
 
     public static final String ORDERED_ADDITIONAL_LISTED = "Ordered Additionals Listed Succesfully";

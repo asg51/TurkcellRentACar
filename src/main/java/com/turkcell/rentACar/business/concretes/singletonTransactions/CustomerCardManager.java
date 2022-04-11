@@ -20,17 +20,15 @@ import com.turkcell.rentACar.core.utilities.results.SuccessResult;
 import com.turkcell.rentACar.dataAccess.abstracts.CustomerCardDao;
 import com.turkcell.rentACar.entities.concretes.CustomerCard;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomerCardManager implements CustomerCardService {
-
+public class CustomerCardManager implements CustomerCardService 
+{
     private CustomerCardDao customerCardDao;
 	private ModelMapperService modelMapperService;
 	private CustomerService customerService;
-   
 
 	@Autowired
 	public CustomerCardManager(CustomerCardDao customerCardDao,ModelMapperService modelMapperService, CustomerService customerService) 
@@ -65,7 +63,6 @@ public class CustomerCardManager implements CustomerCardService {
 	@Override
 	public DataResult<CustomerCardDto> getById(int id) throws BusinessException 
 	{
-
 		checkIfExistsByCardId(id);
 
 		CustomerCard customerCard = customerCardDao.getById(id);

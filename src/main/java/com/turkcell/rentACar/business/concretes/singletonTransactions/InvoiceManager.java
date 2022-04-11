@@ -70,7 +70,7 @@ public class InvoiceManager implements InvoiceService
 	@Override
 	public Result update(UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException 
     {
-		Invoice invoice= this.invoiceDao.getByCarRental_CarRentalId(updateInvoiceRequest.getCarRentalId());
+		Invoice invoice = this.invoiceDao.getByCarRental_CarRentalId(updateInvoiceRequest.getCarRentalId());
 
 		checkIfExistByInvoiceId(invoice.getInvoiceId());
 		
@@ -101,6 +101,6 @@ public class InvoiceManager implements InvoiceService
 			throw new BusinessException(BusinessMessages.INVOICE_NOT_FOUND);
 		}
 
-		return new SuccessResult();
+		return new SuccessResult(BusinessMessages.INVOICE_FOUND);
 	}
 }

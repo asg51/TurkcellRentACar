@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @Service
 public class CarMaintenanceManager implements CarMaintenanceService 
 {
-
 	private ModelMapperService modelMapperService;
 	private CarMaintenanceDao carMaintenanceDao;
 	private CarRentalService carRentalService;
@@ -60,8 +59,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 		checkIfItIsMaintainableByRented(createCarMaintenanceRequest.getCarId(), createCarMaintenanceRequest.getReturnDate());
 		checkIfItIsMaintainableByMaintenance(createCarMaintenanceRequest.getCarId());
 
-		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest,
-				CarMaintenance.class);
+		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(createCarMaintenanceRequest,CarMaintenance.class);
 		carMaintenance.setMaintenanceId(0);
 		this.carMaintenanceDao.save(carMaintenance);
 
@@ -76,8 +74,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 		checkIfItIsMaintainableByRented(updateCarMaintenanceRequest.getCarId(), updateCarMaintenanceRequest.getReturnDate());
 		checkIfItIsMaintainableByMaintenance(updateCarMaintenanceRequest.getCarId());
 		
-		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(updateCarMaintenanceRequest,
-				CarMaintenance.class);
+		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(updateCarMaintenanceRequest,CarMaintenance.class);
 		this.carMaintenanceDao.save(carMaintenance);
 
 		return new SuccessResult(BusinessMessages.CAR_MAINTENANCE_UPDATED);
@@ -88,8 +85,7 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	{
 		checkIfExistByMaintenanceId(deleteCarMaintenanceRequest.getMaintenanceId());
 		
-		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(deleteCarMaintenanceRequest,
-				CarMaintenance.class);
+		CarMaintenance carMaintenance = this.modelMapperService.forRequest().map(deleteCarMaintenanceRequest,CarMaintenance.class);
 		this.carMaintenanceDao.deleteById(carMaintenance.getMaintenanceId());
 
 		return new SuccessResult(BusinessMessages.CAR_MAINTENANCE_DELETED);
@@ -109,15 +105,13 @@ public class CarMaintenanceManager implements CarMaintenanceService
 	}
 
 	@Override
-	public DataResult<CarMaintenance> getByCarIdAndReturnDate(int carId, Date returnDate) 
+	public DataResult<CarMaintenance> getByCarIdAndReturnDate(int carId, Date returnDate) throws BusinessException 
 	{
-		return new SuccessDataResult<CarMaintenance>(
-				this.carMaintenanceDao.getByCar_CarIdAndReturnDate(carId, returnDate));
-	}
+        checkIfCarExistsById(carId);
 
-	private void checkIfItIsMaintainableByRented(int carId, LocalDate localDate) throws BusinessException 
-	{
-		this.carRentalService.IsACarAvailableOnTheSpecifiedDate(carId, localDate);
+        var result = this.carMaintenanceDao.getByCar_CarIdAndReturnDate(carId, returnDate);
+
+		return new SuccessDataResult<CarMaintenance>(result);
 	}
 
 	@Override
@@ -130,8 +124,12 @@ public class CarMaintenanceManager implements CarMaintenanceService
 			throw new BusinessException(BusinessMessages.CAR_MAINTENANCE_ALREADY_EXISTS);
 		}
 
-		return new SuccessResult();
-		
+		return new SuccessResult(BusinessMessages.CAR_MAINTENANCE_NOT_FOUND);
+	}
+
+    private void checkIfItIsMaintainableByRented(int carId, LocalDate localDate) throws BusinessException 
+	{
+		this.carRentalService.IsACarAvailableOnTheSpecifiedDate(carId, localDate);
 	}
 
 	private void checkIfExistByMaintenanceId(int maintenanceId) throws BusinessException 

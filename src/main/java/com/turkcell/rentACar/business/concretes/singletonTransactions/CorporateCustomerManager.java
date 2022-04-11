@@ -21,6 +21,7 @@ import com.turkcell.rentACar.core.utilities.results.SuccessResult;
 import com.turkcell.rentACar.dataAccess.abstracts.CorporateCustomerDao;
 import com.turkcell.rentACar.entities.concretes.CorporateCustomer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,6 +31,7 @@ public class CorporateCustomerManager implements CorporateCustomerService
     private ModelMapperService modelMapperService;
     private UserService userService;
 
+    @Autowired
     public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService, UserService userService) 
     {
         this.corporateCustomerDao = corporateCustomerDao;
@@ -89,7 +91,6 @@ public class CorporateCustomerManager implements CorporateCustomerService
 
         DeleteUserRequest deleteUserRequest = new DeleteUserRequest(deleteCorporateCustomerRequest.getCorporateCustomerId());
 
-		
         this.userService.delete(deleteUserRequest);
 		
 		return new SuccessResult(BusinessMessages.CORPORATE_CUSTOMER_DELETED);
@@ -98,22 +99,25 @@ public class CorporateCustomerManager implements CorporateCustomerService
     @Override
     public Result checkIfExistByCorporateCustomerId(int corporateCustomerId) throws BusinessException 
     {
-		if (!this.corporateCustomerDao.existsById(corporateCustomerId)) {
+		if (!this.corporateCustomerDao.existsById(corporateCustomerId)) 
+        {
 			throw new BusinessException(BusinessMessages.CORPORATE_CUSTOMER_NOT_FOUND);
 		}
-        return new SuccessResult();
+        return new SuccessResult(BusinessMessages.CORPORATE_CUSTOMER_FOUND);
 	}
 
     private void checkIfTaxNumberIsDuplicated(String taxNumber) throws BusinessException
     {
-        if(this.corporateCustomerDao.existsByTaxNumber(taxNumber)){
+        if(this.corporateCustomerDao.existsByTaxNumber(taxNumber))
+        {
             throw new BusinessException(BusinessMessages.TAX_NUMBER_ALREADY_EXISTS);
         }
     }
 
     private void checkIfTaxNumberIsDuplicated(int id, String taxNumber) throws BusinessException
     {
-        if(this.corporateCustomerDao.getCorporateCustomerByTaxNumberAndNotEqualToId(id, taxNumber).size()>0){
+        if(this.corporateCustomerDao.getCorporateCustomerByTaxNumberAndNotEqualToId(id, taxNumber).size()>0)
+        {
             throw new BusinessException(BusinessMessages.TAX_NUMBER_ALREADY_EXISTS);
         }
     }

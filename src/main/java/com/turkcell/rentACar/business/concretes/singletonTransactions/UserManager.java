@@ -9,6 +9,7 @@ import com.turkcell.rentACar.core.utilities.results.SuccessResult;
 import com.turkcell.rentACar.dataAccess.abstracts.UserDao;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class UserManager implements UserService
 {
     private UserDao userDao;
     
+    @Autowired
     public UserManager(UserDao userDao, ModelMapper modelMapper) 
     {
         this.userDao = userDao; 

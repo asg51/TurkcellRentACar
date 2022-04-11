@@ -43,8 +43,7 @@ public class AdditionalServiceManager implements AdditionalServiceService
     {    
         checkIfExistAdditionalServiceByName(createAdditionalServiceRequest.getAdditionalServiceName());
 
-        AdditionalService additionalService = this.modelMapperService.forRequest().map(createAdditionalServiceRequest,
-                AdditionalService.class);
+        AdditionalService additionalService = this.modelMapperService.forRequest().map(createAdditionalServiceRequest,AdditionalService.class);
 
         this.additionalServiceDao.save(additionalService);
 
@@ -57,10 +56,8 @@ public class AdditionalServiceManager implements AdditionalServiceService
         checkIfExistByAdditionalServiceById(updateAdditionalServiceRequest.getAdditionalServiceId());
         checkIfExistAdditionalServiceByName(updateAdditionalServiceRequest.getAdditionalServiceName());
 
-        AdditionalService additionalService = this.additionalServiceDao
-                .getById(updateAdditionalServiceRequest.getAdditionalServiceId());
-        additionalService = this.modelMapperService.forRequest().map(updateAdditionalServiceRequest,
-                AdditionalService.class);
+        AdditionalService additionalService = this.additionalServiceDao.getById(updateAdditionalServiceRequest.getAdditionalServiceId());
+        additionalService = this.modelMapperService.forRequest().map(updateAdditionalServiceRequest,AdditionalService.class);
 
         this.additionalServiceDao.save(additionalService);
 
@@ -72,8 +69,7 @@ public class AdditionalServiceManager implements AdditionalServiceService
     {   
         checkIfExistByAdditionalServiceById(deleteAdditionalServiceRequest.getOrderedAdditionalServiceId());
 
-        AdditionalService additionalService = this.modelMapperService.forRequest().map(deleteAdditionalServiceRequest,
-                AdditionalService.class);
+        AdditionalService additionalService = this.modelMapperService.forRequest().map(deleteAdditionalServiceRequest,AdditionalService.class);
 
         this.additionalServiceDao.delete(additionalService);
 
@@ -84,8 +80,7 @@ public class AdditionalServiceManager implements AdditionalServiceService
     public DataResult<List<AdditionalServiceListDto>> getAll() 
     {    
         List<AdditionalService> result = this.additionalServiceDao.findAll();
-        List<AdditionalServiceListDto> response = result.stream().map(additionalService -> this.modelMapperService
-                .forDto().map(additionalService, AdditionalServiceListDto.class)).collect(Collectors.toList());
+        List<AdditionalServiceListDto> response = result.stream().map(additionalService -> this.modelMapperService.forDto().map(additionalService, AdditionalServiceListDto.class)).collect(Collectors.toList());
 
         return new SuccessDataResult<List<AdditionalServiceListDto>>(response, BusinessMessages.ADDITIONAL_SERVICE_LISTED);
     }
@@ -97,48 +92,47 @@ public class AdditionalServiceManager implements AdditionalServiceService
 
         AdditionalService additionalService = additionalServiceDao.getById(additionalServiceId);
 
-        AdditionalServiceDto additionalServiceDto = this.modelMapperService.forDto().map(additionalService,
-                AdditionalServiceDto.class);
+        AdditionalServiceDto additionalServiceDto = this.modelMapperService.forDto().map(additionalService,AdditionalServiceDto.class);
 
         return new SuccessDataResult<AdditionalServiceDto>(additionalServiceDto, BusinessMessages.ADDITIONAL_SERVICE_GETTED);
     }
 
     @Override
-    public DataResult<List<AdditionalServiceListDto>> getAdditionalServicesByIds(List<Integer> additionalServicesIds)
-            throws BusinessException 
+    public DataResult<List<AdditionalServiceListDto>> getAdditionalServicesByIds(List<Integer> additionalServicesIds) throws BusinessException 
     {
+        checkIfExistByAdditionalServiceByIds(additionalServicesIds);
+        
         var result = this.additionalServiceDao.getAdditionalServicesByIds(additionalServicesIds);
 
-        checkIfRequestedAdditionalServicesAreAvaliable(additionalServicesIds, result);
-
-        List<AdditionalServiceListDto> response = result.stream().map(additionalService -> this.modelMapperService
-                .forDto().map(additionalService, AdditionalServiceListDto.class)).collect(Collectors.toList());
+        List<AdditionalServiceListDto> response = result.stream().map(additionalService -> this.modelMapperService.forDto().map(additionalService, AdditionalServiceListDto.class)).collect(Collectors.toList());
 
         return new SuccessDataResult<List<AdditionalServiceListDto>>(response, BusinessMessages.ADDITIONAL_SERVICE_LISTED);
     }
 
     @Override
-    public DataResult<Double> calculateAdditionalServicePriceForCorporateCustomer(CalculateAdditionalServiceForCorporateCustomerRequest calculateAdditionalServiceForCorporateCustomerRequest)
-            throws BusinessException
+    public DataResult<Double> calculateAdditionalServicePriceForCorporateCustomer(CalculateAdditionalServiceForCorporateCustomerRequest calculateAdditionalServiceForCorporateCustomerRequest) throws BusinessException
     {
+        checkIfExistByAdditionalServiceByIds(calculateAdditionalServiceForCorporateCustomerRequest.getAdditionalServiceIds());
+
         double price = 0.0;
 
-        long days= dateOperations.findTheNumberOfDaysToRent(calculateAdditionalServiceForCorporateCustomerRequest.getStartDate(),
-        calculateAdditionalServiceForCorporateCustomerRequest.getReturnDate());
+        long days= dateOperations.findTheNumberOfDaysToRent(calculateAdditionalServiceForCorporateCustomerRequest.getStartDate(),calculateAdditionalServiceForCorporateCustomerRequest.getReturnDate());
 
         var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForCorporateCustomerRequest.getAdditionalServiceIds()).getData();
         
-        for (var additionalService : additionalServiceListDtos) {
+        for (var additionalService : additionalServiceListDtos) 
+        {
             price += additionalService.getDailyPrice() * days;
         }
 
-        return new SuccessDataResult<>(price);
+        return new SuccessDataResult<>(price, BusinessMessages.ADDITIONAL_SERVICE_CHARGE_CALCULATED);
     }
 
     @Override
-    public DataResult<Double> calculateAdditionalServicePriceForIndividualCustomer(CalculateAdditionalServiceForIndividualCustomerRequest calculateAdditionalServiceForIndividualCustomerRequest)
-            throws BusinessException
+    public DataResult<Double> calculateAdditionalServicePriceForIndividualCustomer(CalculateAdditionalServiceForIndividualCustomerRequest calculateAdditionalServiceForIndividualCustomerRequest) throws BusinessException
     {
+        checkIfExistByAdditionalServiceByIds(calculateAdditionalServiceForIndividualCustomerRequest.getAdditionalServiceIds());
+
         double price = 0.0;
 
         long days= dateOperations.findTheNumberOfDaysToRent(calculateAdditionalServiceForIndividualCustomerRequest.getStartDate(),
@@ -146,35 +140,40 @@ public class AdditionalServiceManager implements AdditionalServiceService
 
         var additionalServiceListDtos = getAdditionalServicesByIds(calculateAdditionalServiceForIndividualCustomerRequest.getAdditionalServiceIds()).getData();
         
-        for (var additionalService : additionalServiceListDtos) {
+        for (var additionalService : additionalServiceListDtos) 
+        {
             price += additionalService.getDailyPrice() * days;
         }
 
-        return new SuccessDataResult<>(price);
+        return new SuccessDataResult<>(price, BusinessMessages.ADDITIONAL_SERVICE_CHARGE_CALCULATED);
     }
 
     @Override
     public Result checkIfExistByAdditionalServiceById(int additionalServiceId) throws BusinessException 
     {    
-        if (!this.additionalServiceDao.existsById(additionalServiceId)) {
+        if (!this.additionalServiceDao.existsById(additionalServiceId)) 
+        {
             throw new BusinessException(BusinessMessages.ADDITIONAL_SERVICE_NOT_FOUND);
         }
 
-        return new SuccessResult();
+        return new SuccessResult(BusinessMessages.ADDITIONAL_SERVICE_FOUND);
+    }
+
+    private void checkIfExistByAdditionalServiceByIds(List<Integer> additionalServiceId) throws BusinessException 
+    {    
+        var additionalServiceListDtos = getAdditionalServicesByIds(additionalServiceId).getData();
+
+        if (additionalServiceListDtos.size()!=additionalServiceId.size()) 
+        {
+            throw new BusinessException(BusinessMessages.ADDITIONAL_SERVICE_NOT_FOUND);
+        }
     }
     
     private void checkIfExistAdditionalServiceByName(String additionalServiceName) throws BusinessException 
     {    
-        if (this.additionalServiceDao.existsByAdditionalServiceName(additionalServiceName)) {
+        if (this.additionalServiceDao.existsByAdditionalServiceName(additionalServiceName)) 
+        {
             throw new BusinessException(BusinessMessages.ADDITIONAL_SERVICE_ALREADY_EXISTS);
-        }
-    }
-
-    private void checkIfRequestedAdditionalServicesAreAvaliable(List<Integer> additionalServicesIds,
-            List<AdditionalService> result) throws BusinessException 
-    {
-        if (additionalServicesIds.size() != result.size()) {
-            throw new BusinessException(BusinessMessages.ADDITIONAL_SERVICE_NOT_FOUND);
         }
     }
 }

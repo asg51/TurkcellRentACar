@@ -54,7 +54,7 @@ public class BrandManager implements BrandService
 	@Override
 	public DataResult<BrandDto> getById(int id) throws BusinessException 
 	{
-		checkIfExistByBrandId(id);
+		checkIfExistBrandId(id);
 
 		Brand brand = brandDao.getById(id);
 		BrandDto brandDto = this.modelMapperService.forDto().map(brand,BrandDto.class);
@@ -65,7 +65,7 @@ public class BrandManager implements BrandService
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException 
 	{
-		checkIfExistByBrandId(updateBrandRequest.getBrandId());
+		checkIfExistBrandId(updateBrandRequest.getBrandId());
 		checkIfExistBrandName(updateBrandRequest.getBrandName());
 
 		Brand brand = this.brandDao.getById(updateBrandRequest.getBrandId());
@@ -78,12 +78,23 @@ public class BrandManager implements BrandService
 	@Override
 	public Result delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException
 	{
-		checkIfExistByBrandId(deleteBrandRequest.getBrandId());
+		checkIfExistBrandId(deleteBrandRequest.getBrandId());
 
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest,Brand.class);
 		this.brandDao.delete(brand);
 
 		return new SuccessResult(BusinessMessages.BRAND_DELETED);
+	}
+
+    @Override
+	public Result checkIfExistBrandId(int brandId) throws BusinessException 
+	{
+		if(!this.brandDao.existsById(brandId)) 
+		{
+			throw new BusinessException(BusinessMessages.BRAND_NOT_FOUND);
+		}
+
+        return new SuccessResult(BusinessMessages.BRAND_FOUND);
 	}
 
 	private void checkIfExistBrandName(String brandName) throws BusinessException 
@@ -92,13 +103,5 @@ public class BrandManager implements BrandService
 		{
 			throw new BusinessException(BusinessMessages.BRAND_ALREADY_EXISTS);
 		}	
-	}
-
-	private void checkIfExistByBrandId(int brandId) throws BusinessException 
-	{
-		if(!this.brandDao.existsById(brandId)) 
-		{
-			throw new BusinessException(BusinessMessages.BRAND_ALREADY_EXISTS);
-		}
 	}
 }

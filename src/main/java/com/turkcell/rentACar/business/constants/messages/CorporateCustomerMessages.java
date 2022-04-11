@@ -15,5 +15,7 @@ public interface CorporateCustomerMessages
 
     public static final String CORPORATE_CUSTOMER_NOT_FOUND = "Corporate Customer Not Found";
 
+    public static final String CORPORATE_CUSTOMER_FOUND = "Corporate Customer Found";
+
     public static final String CORPORATE_CUSTOMER_UPDATED = "Corporate Customer Updated Succesfully";
 }

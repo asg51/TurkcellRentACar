@@ -23,6 +23,8 @@ public class CarRentalDto
     @JsonProperty(value = "endCityId")
     private int endCity_cityId;
 
+    private boolean returnStatus;
+
     @JsonProperty(value = "carId")
     private int car_CarId;
 }

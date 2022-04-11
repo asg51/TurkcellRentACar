@@ -14,5 +14,7 @@ public interface CarMessages
 
     public static final String CAR_NOT_FOUND = "Car Not Found";
 
+    public static final String CAR_FOUND = "Car Found";
+
     public static final String CAR_UPDATED = "Car Updated Succesfully";
 }

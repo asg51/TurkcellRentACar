@@ -14,5 +14,7 @@ public interface InvoiceMessages
 
     public static final String INVOICE_NOT_FOUND = "Invoice Not Found";
 
+    public static final String INVOICE_FOUND = "Invoice Found";
+
     public static final String INVOICE_UPDATED = "Invoice Updated Succesfully";
 }

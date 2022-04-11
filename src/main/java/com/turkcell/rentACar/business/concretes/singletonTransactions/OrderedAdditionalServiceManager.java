@@ -63,7 +63,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		for(var item : aditionalServiceIds)
 		{
 			CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest= new CreateOrderedAdditionalServiceRequest(carRentalId, item);
-
 			this.add(createOrderedAdditionalServiceRequest);
 		}
 
@@ -73,7 +72,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	@Override
 	public Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException 
 	{
-		
 		checkIfCarAdditionalServiceExistsById(updateOrderedAdditionalServiceRequest.getAdditionalServiceId());
 		checkIfCarRentalExistsById(updateOrderedAdditionalServiceRequest.getCarRentalId());
 		checkIfExistByOrderedAdditionalServiceId(updateOrderedAdditionalServiceRequest.getAdditionalServiceId());
@@ -117,11 +115,11 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public Result deleteAllByCarRentelId(int carRentalId) throws BusinessException 
+	public Result deleteAllByCarRentalId(int carRentalId) throws BusinessException 
 	{
 		this.orderedOrderedAdditionalServiceDao.deleteAllByCarRental_CarRentalId(carRentalId);
 
-		return new SuccessResult();
+		return new SuccessResult(BusinessMessages.ORDERED_ADDITIONAL_LIST_DELETED);
 	}
 
 	@Override

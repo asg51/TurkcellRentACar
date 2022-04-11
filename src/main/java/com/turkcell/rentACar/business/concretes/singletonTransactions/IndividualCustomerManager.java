@@ -22,6 +22,7 @@ import com.turkcell.rentACar.core.utilities.results.SuccessResult;
 import com.turkcell.rentACar.dataAccess.abstracts.IndividualCustomerDao;
 import com.turkcell.rentACar.entities.concretes.IndividualCustomer;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +32,7 @@ public class IndividualCustomerManager implements IndividualCustomerService
     private ModelMapperService modelMapperService;
     private UserService userService;
 
+    @Autowired
     public IndividualCustomerManager(IndividualCustomerDao individualCustomerDao, ModelMapperService modelMapperService, UserService userService) 
     {
         this.individualCustomerDao = individualCustomerDao;
@@ -102,22 +104,26 @@ public class IndividualCustomerManager implements IndividualCustomerService
     @Override
     public Result checkIfExistByIndividualCustomerId(int individualCustomerId) throws BusinessException 
     {
-		if (!this.individualCustomerDao.existsById(individualCustomerId)) {
+		if (!this.individualCustomerDao.existsById(individualCustomerId)) 
+        {
 			throw new BusinessException(BusinessMessages.INDIVIDUAL_CUSTOMER_ALREADY_EXISTS);
 		}
-        return new SuccessResult();
+
+        return new SuccessResult(BusinessMessages.INDIVIDUAL_CUSTOMER_FOUND);
 	}
 
     private void checkIfNationalIdentityIsDuplicated(String nationalIdentity) throws BusinessException
     {
-        if(this.individualCustomerDao.existsByNationalIdentity(nationalIdentity)){
+        if(this.individualCustomerDao.existsByNationalIdentity(nationalIdentity))
+        {
             throw new BusinessException(BusinessMessages.NATIONAL_IDENTITY_ALREADY_EXISTS);
         }
     }
 
     private void checkIfNationalIdentityIsDuplicated(int id, String nationalIdentity) throws BusinessException
     {
-        if(this.individualCustomerDao.getIndividualCustomerByNationalIdentityAndNotEqualToId(id, nationalIdentity).size()>0){
+        if(this.individualCustomerDao.getIndividualCustomerByNationalIdentityAndNotEqualToId(id, nationalIdentity).size()>0)
+        {
             throw new BusinessException(BusinessMessages.NATIONAL_IDENTITY_ALREADY_EXISTS);
         }
     }

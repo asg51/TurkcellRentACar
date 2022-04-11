@@ -29,7 +29,7 @@ public class CustomerManager implements CustomerService
             throw new BusinessException(BusinessMessages.CUSTOMER_ALREADY_EXISTS);
         }
 
-        return new SuccessResult();
+        return new SuccessResult(BusinessMessages.CUSTOMER_FOUND);
     }
     
 }

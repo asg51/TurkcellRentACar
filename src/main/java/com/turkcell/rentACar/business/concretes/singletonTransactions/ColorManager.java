@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ColorManager implements ColorService {
-
+public class ColorManager implements ColorService 
+{
 	private ColorDao colorDao;
 	private ModelMapperService modelMapperService;
 
@@ -86,6 +86,17 @@ public class ColorManager implements ColorService {
 		return new SuccessResult(BusinessMessages.COLOR_DELETED);
 	}
 
+    @Override
+    public Result checkIfExistByColorId(int colorId) throws BusinessException 
+	{
+		if(!this.colorDao.existsById(colorId)) 
+		{
+			throw new BusinessException(BusinessMessages.COLOR_NOT_FOUND);
+		}
+
+        return new SuccessResult(BusinessMessages.COLOR_FOUND);
+	}
+
 	private void checkIfExistColorName(String colorName) throws BusinessException 
 	{
 		if(this.colorDao.existsByColorName(colorName)) 
@@ -94,11 +105,5 @@ public class ColorManager implements ColorService {
 		}	
 	}
 
-	private void checkIfExistByColorId(int colorId) throws BusinessException 
-	{
-		if(!this.colorDao.existsById(colorId)) 
-		{
-			throw new BusinessException(BusinessMessages.COLOR_NOT_FOUND);
-		}
-	}
+	
 }

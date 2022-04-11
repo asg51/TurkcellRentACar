@@ -1,7 +1,9 @@
 package com.turkcell.rentACar.business.concretes.singletonTransactions;
 
+import com.turkcell.rentACar.business.abstracts.singletonTransactions.BrandService;
 import com.turkcell.rentACar.business.abstracts.singletonTransactions.CarMaintenanceService;
 import com.turkcell.rentACar.business.abstracts.singletonTransactions.CarService;
+import com.turkcell.rentACar.business.abstracts.singletonTransactions.ColorService;
 import com.turkcell.rentACar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentACar.business.dtos.car.CarListDto;
 import com.turkcell.rentACar.business.requests.car.CreateCarRequest;
@@ -29,11 +31,17 @@ public class CarManager implements CarService
 	private CarDao carDao;
 	private ModelMapperService modelMapperService;
 
+    private BrandService brandService;
+    private ColorService colorService;
+
 	@Autowired
-	public CarManager(CarDao carDao, ModelMapperService modelMapperService, @Lazy CarMaintenanceService carMaintenanceService) 
+	public CarManager(CarDao carDao, ModelMapperService modelMapperService, @Lazy CarMaintenanceService carMaintenanceService, BrandService brandService, ColorService colorService) 
 	{
 		this.carDao = carDao;
 		this.modelMapperService = modelMapperService;
+
+        this.brandService = brandService;
+        this.colorService = colorService;
 	}
 
 	@Override
@@ -48,6 +56,9 @@ public class CarManager implements CarService
 	@Override
 	public Result add(CreateCarRequest createCarRequest) throws BusinessException 
 	{
+        checkIfExistBrandId(createCarRequest.getBrandId());
+        checkIfExistByColorId(createCarRequest.getColorId());
+
 		Car car = this.modelMapperService.forRequest().map(createCarRequest,Car.class);
 		this.carDao.save(car);
 		
@@ -58,6 +69,8 @@ public class CarManager implements CarService
 	public Result update(UpdateCarRequest updateCarRequest) throws BusinessException
 	{
 		checkIfExistByCarId(updateCarRequest.getCarId());
+        checkIfExistBrandId(updateCarRequest.getBrandId());
+        checkIfExistByColorId(updateCarRequest.getColorId());
 		
 		Car car = carDao.getById(updateCarRequest.getCarId());
 		car = this.modelMapperService.forRequest().map(updateCarRequest,Car.class);
@@ -137,6 +150,16 @@ public class CarManager implements CarService
 		{
 			throw new BusinessException(BusinessMessages.CAR_NOT_FOUND);
 		}
-		return new SuccessResult();
+		return new SuccessResult(BusinessMessages.CAR_FOUND);
 	}
+
+    private void checkIfExistBrandId(int brandId) throws BusinessException 
+	{
+		this.brandService.checkIfExistBrandId(brandId);
+	}
+
+    private void checkIfExistByColorId(int colorId) throws BusinessException
+    {
+        this.colorService.checkIfExistByColorId(colorId);
+    }
 }

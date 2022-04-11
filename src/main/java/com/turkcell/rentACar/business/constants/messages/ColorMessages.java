@@ -14,5 +14,7 @@ public interface ColorMessages
 
     public static final String COLOR_NOT_FOUND = "Color Not Found";
 
+    public static final String COLOR_FOUND = "Color Found";
+
     public static final String COLOR_UPDATED = "Color Updated Succesfully";
 }
